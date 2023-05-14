@@ -145,6 +145,10 @@ const Screen5 = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  img {
+    width: 436px;
+    height: 436px;
+  }
 `;
 const Screen5Box = styled(Screen1Box)`
   width: 460px;
