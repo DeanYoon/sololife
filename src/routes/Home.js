@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   position: relative;
   overflow: hidden;
   padding-top: 500px;
-  margin-top: 2800px;
+  margin-top: 2700px;
 `;
 
 const Screen1 = styled.div`
@@ -94,6 +94,7 @@ const Screen3ImgBox = styled.div`
   align-items: center;
   justify-content: space-around;
   padding: 0 50px;
+  box-shadow: 1px 3px 10px -5px gray;
   img {
     width: 60px;
     margin-bottom: 20px;
@@ -214,6 +215,12 @@ const ApplyBtn = styled.a`
   font-size: 12px;
   font: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: white;
+    color: #ff5f2d;
+    border: 1px solid #ff5f2d;
+  }
 `;
 const Circles = styled.div`
   div {

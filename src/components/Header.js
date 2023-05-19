@@ -34,10 +34,12 @@ const Buttons = styled.div`
     align-items: center;
     font-size: 12px;
     font: bold;
-  }
-  a:last-child {
-    color: white;
-    background-color: #ff5f2d;
+    transition: background-color 0.3s ease;
+    padding-top: 3px;
+    &:hover {
+      background-color: #ff5f2d;
+      color: white;
+    }
   }
 `;
 export default function Header() {
@@ -45,7 +47,7 @@ export default function Header() {
     <Wrapper>
       <img src="./imgs/Logo.png" />
       <Buttons>
-        <a href="/">로그인</a>
+        <a href="/Login">로그인</a>
         <a href="/">회원가입</a>
       </Buttons>
     </Wrapper>
