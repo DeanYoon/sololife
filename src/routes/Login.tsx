@@ -35,14 +35,12 @@ const LoginForm = styled.form`
 const LoginInput = styled.input`
   width: 400px;
   height: 56px;
+  outline: none;
   border: none;
   font-size: 16px;
   border-bottom: 1px solid #dddddd;
   ::placeholder {
     color: #767676;
-  }
-  &:focus {
-    border: none;
   }
 `;
 
@@ -112,9 +110,12 @@ const Logo = styled.div`
   left: 0;
   width: 50px;
   height: 55px;
-`;
-const GoogleIcon = styled(FontAwesomeIcon)`
-  font-size: 20px;
+  img {
+    width: 30px;
+  }
+  #chat {
+    width: 50px;
+  }
 `;
 
 function Login() {
@@ -133,8 +134,8 @@ function Login() {
           ></LoginInput>
           <ForgotIDPass href="/">아이디/비밀번호 잊으셨나요?</ForgotIDPass>
           <BtnBox>
-            <LoginBtn href="/">로그인</LoginBtn>
-            <SignupBtn href="/">회원가입</SignupBtn>
+            <LoginBtn href="/login">로그인</LoginBtn>
+            <SignupBtn href="/signup">회원가입</SignupBtn>
           </BtnBox>
         </LoginForm>
         <Barrier>
@@ -143,13 +144,13 @@ function Login() {
         <BtnBox>
           <SocialBtn href="/">
             <Logo>
-              <GoogleIcon icon={faGoogle} />
+              <img src="./imgs/icons/GoogleLogo.png" />
             </Logo>
             구글 아이디로 시작하기
           </SocialBtn>
           <SocialBtn href="/">
             <Logo>
-              <GoogleIcon icon={faMessage} />
+              <img id="chat" src="./imgs/icons/KakaoLogo.png" />
             </Logo>
             카카오 아이디로 시작하기
           </SocialBtn>

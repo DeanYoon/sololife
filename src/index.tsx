@@ -84,8 +84,10 @@ button{
   cursor: pointer;
 }
 `;
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <div>
     <React.StrictMode />
