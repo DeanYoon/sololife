@@ -47,8 +47,8 @@ export default function Header() {
     <Wrapper>
       <img src="./imgs/Logo.png" />
       <Buttons>
-        <a href="/Login">로그인</a>
-        <a href="/">회원가입</a>
+        <a href="/login">로그인</a>
+        <a href="/signup">회원가입</a>
       </Buttons>
     </Wrapper>
   );
