@@ -15,7 +15,7 @@ const Screen1 = styled.div`
   font-size: 100px;
   background-color: #fffaf4;
   height: 650px;
-  margin-top: 65px;
+
   display: flex;
   align-items: center;
   justify-content: left;
