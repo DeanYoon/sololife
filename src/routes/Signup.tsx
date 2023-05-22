@@ -1,5 +1,11 @@
 import styled from "styled-components";
 import SocialLoginBtns from "../components/SocialLoginBtns";
+import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Wrapper = styled.div`
   background-color: #fffaf4;
@@ -37,7 +43,13 @@ const Box_Top = styled.div`
 const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
+  position: relative;
   font-family: "NanumSquare", sans-serif;
+`;
+
+const InputBox = styled.div`
+  position: relative;
+  display: flex;
 `;
 
 const LoginInput = styled.input`
@@ -47,9 +59,16 @@ const LoginInput = styled.input`
   border: none;
   font-size: 16px;
   border-bottom: 1px solid #dddddd;
+  padding-left: 20px;
   ::placeholder {
     color: #767676;
   }
+`;
+const InputValidation = styled.span`
+  display: flex;
+  position: absolute;
+  right: 30px;
+  top: 15px;
 `;
 
 const MoveToLogin = styled.a`
@@ -77,6 +96,7 @@ const LoginBtn = styled.a`
   font-weight: bold;
   transition: background-color 0.3s ease;
   margin: 8px 0;
+  background-color: inherit;
   &:hover {
     color: white;
     background-color: #ff5f2d;
@@ -85,6 +105,7 @@ const LoginBtn = styled.a`
 
 const SubmitBtn = styled(LoginBtn)`
   border: 1px solid #ff5f2d;
+  cursor: pointer;
 `;
 
 const Barrier = styled.div`
@@ -101,6 +122,20 @@ const Barrier = styled.div`
 `;
 
 function Signup() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
+  const { email, name, password, checkPassword } = watch();
+
+  const onValid = (data: any) => {
+    console.log(data);
+  };
+
   return (
     <Wrapper>
       <Title>회원가입</Title>
@@ -116,13 +151,99 @@ function Signup() {
         <Barrier>
           <span>또는</span>
         </Barrier>
-        <LoginForm>
-          <LoginInput type="email" placeholder="이메일 주소"></LoginInput>
-          <LoginInput type="text" placeholder="성명"></LoginInput>
-          <LoginInput type="password" placeholder="비밀번호"></LoginInput>
-          <LoginInput type="password" placeholder="비밀번호 확인"></LoginInput>
+        <LoginForm onSubmit={handleSubmit(onValid)}>
+          <InputBox>
+            <LoginInput
+              {...register("email", {
+                required: true,
+                pattern: {
+                  value: /^(?:\d{3}-\d{4}-\d{4}|\w+@\w+\.\w{2,3})$/,
+                  message: "asd",
+                },
+              })}
+              placeholder="이메일 주소"
+            ></LoginInput>
+            <InputValidation>
+              {errors.email ? (
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  style={{ color: "red", fontSize: "20px" }}
+                />
+              ) : null}
+              {!errors.email && email ? (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  style={{ fontSize: "20px" }}
+                />
+              ) : null}
+            </InputValidation>
+          </InputBox>
+          <InputBox>
+            <LoginInput
+              {...register("name", {
+                required: true,
+              })}
+              placeholder="이름"
+            ></LoginInput>
+            <InputValidation>
+              {errors.name ? (
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  style={{ color: "red", fontSize: "20px" }}
+                />
+              ) : null}
+              {!errors.name && name ? (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  style={{ fontSize: "20px" }}
+                />
+              ) : null}
+            </InputValidation>
+          </InputBox>
+          <InputBox>
+            <LoginInput
+              {...register("password", { required: "Add Password" })}
+              placeholder="비밀번호"
+              type="password"
+            ></LoginInput>
+            <InputValidation>
+              {errors.password ? (
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  style={{ color: "red", fontSize: "20px" }}
+                />
+              ) : null}
+              {!errors.password && password ? (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  style={{ fontSize: "20px" }}
+                />
+              ) : null}
+            </InputValidation>
+          </InputBox>
+          <InputBox>
+            <LoginInput
+              {...register("checkPassword", { required: "Add Password" })}
+              placeholder="비밀번호 확인"
+              type="password"
+            ></LoginInput>
+            <InputValidation>
+              {errors.checkPassword || checkPassword !== password ? (
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  style={{ color: "red", fontSize: "20px" }}
+                />
+              ) : null}
+              {!errors.checkPassword && checkPassword == password ? (
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  style={{ fontSize: "20px" }}
+                />
+              ) : null}
+            </InputValidation>
+          </InputBox>
           <BtnBox>
-            <SubmitBtn>가입하기</SubmitBtn>
+            <SubmitBtn as="button">가입하기</SubmitBtn>
           </BtnBox>
         </LoginForm>
       </Box>
