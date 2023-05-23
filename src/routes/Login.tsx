@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import SocialLoginBtns from "../components/SocialLoginBtns";
+import { useForm } from "react-hook-form";
 
 const Wrapper = styled.div`
   background-color: #fffaf4;
@@ -63,6 +64,7 @@ const LoginBtn = styled.a`
   font-weight: bold;
   transition: background-color 0.3s ease;
   margin: 8px 0;
+  background-color: white;
   &:hover {
     color: white;
     background-color: #ff5f2d;
@@ -87,22 +89,35 @@ const Barrier = styled.div`
 `;
 
 function Login() {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
+
+  const onValid = (data: any) => {
+    console.log(data);
+  };
   return (
     <Wrapper>
       <Title>로그인</Title>
       <Box>
-        <LoginForm>
+        <LoginForm onSubmit={handleSubmit(onValid)}>
           <LoginInput
-            type="email"
+            {...register("email", { required: true })}
             placeholder="아이디(이메일)를 입력하세요"
           ></LoginInput>
           <LoginInput
+            {...register("password", { required: true })}
             type="password"
             placeholder="비밀번호를 입력하세요"
           ></LoginInput>
           <ForgotIDPass href="/">아이디/비밀번호 잊으셨나요?</ForgotIDPass>
           <BtnBox>
-            <LoginBtn href="/login">로그인</LoginBtn>
+            <LoginBtn as="button">로그인</LoginBtn>
             <SignupBtn href="/signup">회원가입</SignupBtn>
           </BtnBox>
         </LoginForm>
