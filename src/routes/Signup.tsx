@@ -133,7 +133,9 @@ function Signup() {
   const { email, name, password, checkPassword } = watch();
 
   const onValid = (data: any) => {
-    console.log(data);
+    if (password === checkPassword) {
+      console.log(data);
+    }
   };
 
   return (
