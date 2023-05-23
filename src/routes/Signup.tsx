@@ -144,7 +144,7 @@ function Signup() {
           <img src="./imgs/Logo.png" />
           <div>
             이미 솔로라이프 회원이신가요?
-            <MoveToLogin href="/">로그인하기</MoveToLogin>
+            <MoveToLogin href="/login">로그인하기</MoveToLogin>
           </div>
         </Box_Top>
         <SocialLoginBtns />
@@ -207,7 +207,7 @@ function Signup() {
               type="password"
             ></LoginInput>
             <InputValidation>
-              {errors.password ? (
+              {password && errors.password ? (
                 <FontAwesomeIcon
                   icon={faTimesCircle}
                   style={{ color: "red", fontSize: "20px" }}
@@ -228,13 +228,16 @@ function Signup() {
               type="password"
             ></LoginInput>
             <InputValidation>
-              {errors.checkPassword || checkPassword !== password ? (
+              {checkPassword &&
+              (errors.checkPassword || checkPassword !== password) ? (
                 <FontAwesomeIcon
                   icon={faTimesCircle}
                   style={{ color: "red", fontSize: "20px" }}
                 />
               ) : null}
-              {!errors.checkPassword && checkPassword == password ? (
+              {checkPassword &&
+              !errors.checkPassword &&
+              checkPassword == password ? (
                 <FontAwesomeIcon
                   icon={faCheckCircle}
                   style={{ fontSize: "20px" }}
