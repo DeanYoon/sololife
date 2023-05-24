@@ -6,7 +6,10 @@ import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { hashPassword } from "../components/hash";
+import bcrypt from "bcryptjs";
+import { postInsertUserData } from "../components/api";
+import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   background-color: #fffaf4;
   width: 100vw;
@@ -121,6 +124,13 @@ const Barrier = styled.div`
   }
 `;
 
+interface IFormData {
+  email: string;
+  name: string;
+  password: string;
+  checkPassword: string;
+}
+
 function Signup() {
   const {
     register,
@@ -131,10 +141,21 @@ function Signup() {
     mode: "onChange",
   });
   const { email, name, password, checkPassword } = watch();
-
-  const onValid = (data: any) => {
+  const navigate = useNavigate();
+  const onValid = async (data: any) => {
     if (password === checkPassword) {
-      console.log(data);
+      const hashedPassword = await hashPassword(data.password);
+      const userData = {
+        email: data.email,
+        password: hashedPassword,
+      };
+
+      const insertResult = await postInsertUserData(userData);
+      if (insertResult?.data.message !== "NG") {
+        navigate("/signup-done");
+      }
+    } else {
+      alert("다시 입력하십시오");
     }
   };
 
