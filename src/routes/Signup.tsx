@@ -50,7 +50,7 @@ const LoginForm = styled.form`
   font-family: "NanumSquare", sans-serif;
 `;
 
-const InputBox = styled.div`
+export const InputBox = styled.div`
   position: relative;
   display: flex;
 `;
@@ -67,7 +67,7 @@ const LoginInput = styled.input`
     color: #767676;
   }
 `;
-const InputValidation = styled.span`
+export const InputValidation = styled.span`
   display: flex;
   position: absolute;
   right: 30px;

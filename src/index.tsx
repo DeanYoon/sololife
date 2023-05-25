@@ -84,6 +84,11 @@ a {
 button{
   cursor: pointer;
 }
+input{
+  &:focus{
+    outline: none;
+  }
+}
 `;
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -4,6 +4,7 @@ import Login from "./routes/Login";
 import Signup from "./routes/Signup";
 import SignupSuccess from "./routes/SignupSuccess";
 import FindPassword from "./routes/FindPassword";
+import ChangePassword from "./routes/ChangePassword";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/signup" element={<Signup />}></Route>
         <Route path="/signup-done" element={<SignupSuccess />}></Route>
         <Route path="/find-password" element={<FindPassword />}></Route>
+        <Route path="/change-password" element={<ChangePassword />}></Route>
       </Routes>
     </Router>
   );
