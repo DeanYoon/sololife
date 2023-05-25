@@ -151,6 +151,7 @@ function Signup() {
       };
 
       const insertResult = await postInsertUserData(userData);
+      console.log(insertResult?.data.message);
       if (insertResult?.data.message !== "NG") {
         navigate("/signup-done");
       }

@@ -47,6 +47,10 @@ const ForgotIDPass = styled.a`
   font-size: 15px;
   text-align: end;
   margin-top: 30px;
+  &:hover {
+    text-decoration: underline;
+    text-decoration-color: #767676;
+  }
 `;
 
 const BtnBox = styled.div`
@@ -115,7 +119,9 @@ function Login() {
             type="password"
             placeholder="비밀번호를 입력하세요"
           ></LoginInput>
-          <ForgotIDPass href="/">아이디/비밀번호 잊으셨나요?</ForgotIDPass>
+          <ForgotIDPass href="/find-password">
+            아이디/비밀번호 잊으셨나요?
+          </ForgotIDPass>
           <BtnBox>
             <LoginBtn as="button">로그인</LoginBtn>
             <SignupBtn href="/signup">회원가입</SignupBtn>

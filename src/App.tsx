@@ -3,6 +3,7 @@ import Home from "./routes/Home";
 import Login from "./routes/Login";
 import Signup from "./routes/Signup";
 import SignupSuccess from "./routes/SignupSuccess";
+import FindPassword from "./routes/FindPassword";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/signup" element={<Signup />}></Route>
         <Route path="/signup-done" element={<SignupSuccess />}></Route>
+        <Route path="/find-password" element={<FindPassword />}></Route>
       </Routes>
     </Router>
   );
