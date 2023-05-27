@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { KakaoLogin } from "./KakaoLogin";
+import { GoogleLoginButton } from "./GoogleLogin";
 
 const BtnBox = styled.div`
   margin-top: 30px;
@@ -37,18 +39,8 @@ const Logo = styled.div`
 function SocialLoginBtns() {
   return (
     <BtnBox>
-      <SocialBtn href="/">
-        <Logo>
-          <img src="./imgs/icons/GoogleLogo.png" />
-        </Logo>
-        구글 아이디로 시작하기
-      </SocialBtn>
-      <SocialBtn href="/">
-        <Logo>
-          <img id="chat" src="./imgs/icons/KakaoLogo.png" />
-        </Logo>
-        카카오 아이디로 시작하기
-      </SocialBtn>
+      <GoogleLoginButton />
+      <KakaoLogin />
     </BtnBox>
   );
 }

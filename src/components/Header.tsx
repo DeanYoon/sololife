@@ -1,5 +1,6 @@
 import styled from "styled-components";
-
+import { useRecoilState } from "recoil";
+import { loginState } from "../atoms";
 const Wrapper = styled.div`
   position: fixed;
   top: 0;
@@ -22,7 +23,8 @@ const Buttons = styled.div`
   align-items: center;
   padding: 8px;
   font-weight: 500;
-  a {
+  a,
+  button {
     width: 120px;
     height: 40px;
     border: 1px solid #ff5f2d;
@@ -36,6 +38,7 @@ const Buttons = styled.div`
     font: bold;
     transition: background-color 0.3s ease;
     padding-top: 3px;
+    background-color: white;
     &:hover {
       background-color: #ff5f2d;
       color: white;
@@ -43,13 +46,20 @@ const Buttons = styled.div`
   }
 `;
 export default function Header() {
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   return (
     <Wrapper>
       <img src="./imgs/Logo.png" />
-      <Buttons>
-        <a href="/login">로그인</a>
-        <a href="/signup">회원가입</a>
-      </Buttons>
+      {isLoggedIn ? (
+        <Buttons>
+          <button onClick={() => setIsLoggedIn(false)}>로그아웃</button>
+        </Buttons>
+      ) : (
+        <Buttons>
+          <a href="/login">로그인</a>
+          <a href="/signup">회원가입</a>
+        </Buttons>
+      )}
     </Wrapper>
   );
 }

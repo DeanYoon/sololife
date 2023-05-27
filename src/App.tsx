@@ -5,6 +5,7 @@ import Signup from "./routes/Signup";
 import SignupSuccess from "./routes/SignupSuccess";
 import FindPassword from "./routes/FindPassword";
 import ChangePassword from "./routes/ChangePassword";
+import KakaoCheck from "./routes/KakaoCheck";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/signup-done" element={<SignupSuccess />}></Route>
         <Route path="/find-password" element={<FindPassword />}></Route>
         <Route path="/change-password" element={<ChangePassword />}></Route>
+        <Route path={"/kakao-login"} element={<KakaoCheck />}></Route>
       </Routes>
     </Router>
   );

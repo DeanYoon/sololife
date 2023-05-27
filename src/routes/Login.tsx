@@ -69,6 +69,7 @@ const LoginBtn = styled.a`
   transition: background-color 0.3s ease;
   margin: 8px 0;
   background-color: white;
+  font-size: 16px;
   &:hover {
     color: white;
     background-color: #ff5f2d;
@@ -77,6 +78,7 @@ const LoginBtn = styled.a`
 
 const SignupBtn = styled(LoginBtn)`
   border: 1px solid #ff5f2d;
+  font-size: 16px;
 `;
 
 const Barrier = styled.div`
