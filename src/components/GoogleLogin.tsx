@@ -7,7 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUserData, IUserDataSaveData } from "./KakaoLogin";
-import { loginState } from "../atoms";
+import { UserData, loginState } from "../atoms";
 
 const GoogleLoginWrapper = styled.div`
   width: 100%;
@@ -41,6 +41,7 @@ const GoogleLoginWrapper = styled.div`
 export const GoogleLoginButton = () => {
   const setIsLoggedIn = useSetRecoilState(loginState);
   const [user, setUser] = useState<TokenResponse>();
+  const [userData, setUserData] = useRecoilState(UserData);
   const navigate = useNavigate();
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
@@ -79,13 +80,14 @@ export const GoogleLoginButton = () => {
 
           sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
           setIsLoggedIn(true);
+          setUserData(name);
           const data = {
             email,
             password: "00000000",
             profile_img: picture,
           };
 
-          console.log(data);
+          // console.log(data);
 
           navigate("/");
         })

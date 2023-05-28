@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { InputBox, InputValidation } from "./Signup";
 import { hashPassword } from "../components/hash";
+import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   background-color: #fffaf4;
   width: 100vw;
@@ -101,12 +102,18 @@ function ChangePassword() {
     mode: "onChange",
   });
   const { password, checkPassword } = watch();
+  const navigate = useNavigate();
 
   const onValid = async (data: any) => {
     if (password === checkPassword) {
       const hashedPassword = await hashPassword(data.password);
       console.log(hashedPassword);
     }
+  };
+
+  const handleCancelClick = (event: any) => {
+    event.preventDefault();
+    navigate("/login");
   };
   return (
     <Wrapper>
@@ -174,7 +181,7 @@ function ChangePassword() {
           </ul>
         </CautionBox>
         <Buttons>
-          <CancelBtn>취소</CancelBtn>
+          <CancelBtn onClick={handleCancelClick}>취소</CancelBtn>
           <SubmitBtn>비밀번호 변경</SubmitBtn>
         </Buttons>
       </Box>

@@ -15,13 +15,13 @@ export const loginState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-// export const UserData = atom<IUserData>({
-//   key: "UserData",
-//   default: {
-//     id: 0,
-//     email: "",
-//     nickname: "",
-//     profile_image: "",
-//   },
-//   effects_UNSTABLE: [persistAtom],
-// });
+interface UserData {
+  username: string;
+}
+export const UserData = atom<UserData>({
+  key: "UserData",
+  default: {
+    username: "",
+  },
+  effects_UNSTABLE: [persistAtom],
+});

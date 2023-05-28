@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import axios from "axios";
-import { loginState } from "../atoms";
+import { UserData, loginState } from "../atoms";
 
 const KakaoButton = styled.button`
   width: 100%;
@@ -90,6 +90,7 @@ export interface IUserDataSaveData {
 
 export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
+  const [userData, setUserData] = useRecoilState(UserData);
   const navigate = useNavigate();
   useEffect(() => {
     const baseUrl = "https://kauth.kakao.com/oauth/token";
@@ -104,58 +105,63 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
     const finalUrl = `${baseUrl}?${params}`;
 
     const fetchKakaoData = async () => {
-      const kakaoTokenRequest = await axios.post(finalUrl, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
+      try {
+        const kakaoTokenRequest = await axios.post(finalUrl, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
 
-      if ("access_token" in kakaoTokenRequest.data) {
-        const { access_token } = kakaoTokenRequest.data;
+        if ("access_token" in kakaoTokenRequest.data) {
+          const { access_token } = kakaoTokenRequest.data;
 
-        const userDataFromKakao = await axios.get(
-          "https://kapi.kakao.com/v2/user/me",
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-              "Content-type": "application/json",
-            },
-          }
-        );
+          const userDataFromKakao = await axios.get(
+            "https://kapi.kakao.com/v2/user/me",
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+                "Content-type": "application/json",
+              },
+            }
+          );
 
-        //recoil 전역 변수에 유저 데이터 저장 (꼭 필요한지?)
-        const {
-          id,
-          kakao_account: { email, gender },
-          properties: { profile_image, nickname },
-        } = userDataFromKakao.data;
+          //recoil 전역 변수에 유저 데이터 저장 (꼭 필요한지?)
+          const {
+            id,
+            kakao_account: { email, gender },
+            properties: { profile_image, nickname },
+          } = userDataFromKakao.data;
 
-        const loggedInUserDataAll: IUserDataSaveData = {
-          nickname,
-          birthday: "asd",
-          phone: "",
-          gender,
-          cities_code: 0,
-          address: "",
-          profile_image,
-        };
-        const loggedInUserData: IUserData = {
-          id,
-          email,
-          nickname,
-          profile_image,
-        };
+          const loggedInUserDataAll: IUserDataSaveData = {
+            nickname,
+            birthday: "asd",
+            phone: "",
+            gender,
+            cities_code: 0,
+            address: "",
+            profile_image,
+          };
+          const loggedInUserData: IUserData = {
+            id,
+            email,
+            nickname,
+            profile_image,
+          };
+          setUserData(nickname);
+          //Session Storage에 userdata 저장
+          sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
 
-        //Session Storage에 userdata 저장
-        sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
+          const data = {
+            email: loggedInUserData.email,
+            password: "00000000",
+          };
+          setIsLoggedIn(true);
 
-        const data = {
-          email: loggedInUserData.email,
-          password: "00000000",
-        };
-        setIsLoggedIn(true);
-        window.location.href = "/";
+          window.location.href = "/";
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
     fetchKakaoData();
