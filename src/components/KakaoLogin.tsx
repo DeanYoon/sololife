@@ -48,7 +48,7 @@ export const KakaoLogin = () => {
   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
   const config = {
     client_id: "d40768c0a7713feacbc40a16c77a08bf",
-    redirect_uri: "http://localhost:8080/kakao-login",
+    redirect_uri: "https://sololife-git-master-deanyoon.vercel.app/kakao-login",
     response_type: "code",
   };
   const params = new URLSearchParams(config).toString();
@@ -98,7 +98,8 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
       client_id: "d40768c0a7713feacbc40a16c77a08bf",
       client_secret: "AoMHS1j30H8LIi0Vrn4OK2KLmdBWTKHD",
       grant_type: "authorization_code",
-      redirect_uri: "http://localhost:8080/kakao-login",
+      redirect_uri:
+        "https://sololife-git-master-deanyoon.vercel.app/kakao-login",
       code: code as string,
     };
     const params = new URLSearchParams(config).toString();
