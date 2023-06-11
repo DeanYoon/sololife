@@ -267,16 +267,12 @@ function Home() {
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
 
-  const location = useLocation();
   useEffect(() => {
-    // Check if the current route is "/"
-    if (location.pathname === "/") {
-      setIsHideBackground(true);
-    } else {
-      setIsHideBackground(false);
-    }
-  }, [location, isHideBackground]);
-
+    setIsHideBackground(true);
+  }, []);
+  useEffect(() => {
+    console.log("asd", isHideBackground);
+  }, [isHideBackground]);
   return (
     <Wrapper>
       <Header />

@@ -12,8 +12,10 @@ import { postInsertUserData } from "../components/api";
 import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   background-color: #fffaf4;
-  width: 100vw;
-  height: 100vh;
+  max-width: 500px;
+  min-width: 375px;
+  min-height: 100vh;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;

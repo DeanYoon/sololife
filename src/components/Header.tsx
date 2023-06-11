@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
-import { UserData, loginState } from "../atoms";
+import { UserData, hideBackground, loginState } from "../atoms";
 const Wrapper = styled.div`
   position: fixed;
   top: 0;
@@ -49,11 +49,12 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const userData = useRecoilValue(UserData);
   const resetUserData = useResetRecoilState(UserData);
-
+  const asd = useRecoilValue(hideBackground);
   const handleLogout = () => {
     setIsLoggedIn(false);
     resetUserData();
   };
+  console.log(asd);
   return (
     <Wrapper>
       <img src="./imgs/Logo.png" />
