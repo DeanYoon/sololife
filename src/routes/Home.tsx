@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { hideBackground } from "../atoms";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -260,6 +264,19 @@ const Circle4 = styled.div`
 `;
 
 function Home() {
+  const [isHideBackground, setIsHideBackground] =
+    useRecoilState(hideBackground);
+
+  const location = useLocation();
+  useEffect(() => {
+    // Check if the current route is "/"
+    if (location.pathname === "/") {
+      setIsHideBackground(true);
+    } else {
+      setIsHideBackground(false);
+    }
+  }, [location, isHideBackground]);
+
   return (
     <Wrapper>
       <Header />

@@ -50,8 +50,6 @@ export default function Header() {
   const userData = useRecoilValue(UserData);
   const resetUserData = useResetRecoilState(UserData);
 
-  console.log(userData);
-
   const handleLogout = () => {
     setIsLoggedIn(false);
     resetUserData();

@@ -4,9 +4,9 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-export const widthSize = atom({
-  key: "widthSize",
-  default: window.innerWidth,
+export const hideBackground = atom({
+  key: "hideBackground",
+  default: false,
 });
 
 export const loginState = atom({
