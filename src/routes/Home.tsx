@@ -33,7 +33,7 @@ const Screen1 = styled.div`
     z-index: 1;
   }
 `;
-const Screen1Box = styled.div`
+export const Screen1Box = styled.div`
   font-family: "NanumSquareRound", sans-serif;
   color: #ff5f2d;
   width: 430px;
@@ -45,10 +45,10 @@ const Screen1Box = styled.div`
     margin: 15px 0;
   }
 `;
-const Screen1BoxTop = styled.div`
+export const Screen1BoxTop = styled.div`
   font-size: 18px;
 `;
-const Screen1BoxMid = styled.div`
+export const Screen1BoxMid = styled.div`
   font-size: 36px;
   line-height: 150%;
 `;
