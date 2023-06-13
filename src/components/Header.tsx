@@ -49,12 +49,12 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const userData = useRecoilValue(UserData);
   const resetUserData = useResetRecoilState(UserData);
-  const asd = useRecoilValue(hideBackground);
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     resetUserData();
   };
-  console.log(asd);
+
   return (
     <Wrapper>
       <img src="./imgs/Logo.png" />

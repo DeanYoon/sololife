@@ -24,10 +24,14 @@ const Container = styled.div`
 function App() {
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
+  const code = new URL(window.location.href);
 
   useEffect(() => {
     const handleResize = () => {
       setIsHideBackground(window.innerWidth < 1000);
+      if (code.pathname == "/") {
+        setIsHideBackground(true);
+      }
     };
     window.addEventListener("resize", handleResize);
     handleResize();
@@ -48,7 +52,7 @@ function App() {
           <Route path="/signup-done" element={<SignupSuccess />}></Route>
           <Route path="/find-password" element={<FindPassword />}></Route>
           <Route path="/change-password" element={<ChangePassword />}></Route>
-          <Route path={"/kakao-login"} element={<KakaoCheck />}></Route>
+          <Route path="/kakao-login" element={<KakaoCheck />}></Route>
         </Routes>
       </Container>
     </Router>

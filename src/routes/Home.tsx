@@ -271,8 +271,9 @@ function Home() {
     setIsHideBackground(true);
   }, []);
   useEffect(() => {
-    console.log("asd", isHideBackground);
+    setIsHideBackground(true);
   }, [isHideBackground]);
+
   return (
     <Wrapper>
       <Header />
