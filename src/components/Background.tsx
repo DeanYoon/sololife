@@ -37,7 +37,7 @@ function Background() {
   return (
     <Wrapper>
       <Circle>
-        <img src="./imgs/motorcycle.png" />
+        <img src="./imgs/home/motorcycle.png" />
       </Circle>
       <Box>
         <Screen1BoxTop>솔로 라이프, 솔라</Screen1BoxTop>

@@ -16,9 +16,14 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { hideBackground } from "./atoms";
 import Background from "./components/Background";
+import MyProfile from "./routes/MyProfile";
 
 const Container = styled.div`
   display: flex;
+`;
+
+const AppScreen = styled.div`
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 `;
 
 function App() {
@@ -45,15 +50,19 @@ function App() {
     <Router>
       <Container>
         {isHideBackground ? null : <Background />}
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/signup" element={<Signup />}></Route>
-          <Route path="/signup-done" element={<SignupSuccess />}></Route>
-          <Route path="/find-password" element={<FindPassword />}></Route>
-          <Route path="/change-password" element={<ChangePassword />}></Route>
-          <Route path="/kakao-login" element={<KakaoCheck />}></Route>
-        </Routes>
+        <AppScreen>
+          <Routes>
+            <Route path="/" element={<Home />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/signup" element={<Signup />}></Route>
+            <Route path="/signup-done" element={<SignupSuccess />}></Route>
+            <Route path="/find-password" element={<FindPassword />}></Route>
+            <Route path="/change-password" element={<ChangePassword />}></Route>
+            <Route path="/kakao-login" element={<KakaoCheck />}></Route>
+            {/* For App */}
+            <Route path="/myprofile" element={<MyProfile />}></Route>
+          </Routes>
+        </AppScreen>
       </Container>
     </Router>
   );

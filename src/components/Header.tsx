@@ -57,7 +57,7 @@ export default function Header() {
 
   return (
     <Wrapper>
-      <img src="./imgs/Logo.png" />
+      <img src="./imgs/home/Logo.png" />
       {isLoggedIn ? (
         <Buttons>
           <button onClick={handleLogout}>로그아웃</button>

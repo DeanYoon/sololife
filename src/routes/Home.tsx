@@ -288,10 +288,10 @@ function Home() {
             바탕으로 따듯한 라이프가 되는 서비스를 지양합니다.
           </Screen1BoxBottom>
         </Screen1Box>
-        <img src="./imgs/rocket.png" />
+        <img src="./imgs/home/rocket.png" />
       </Screen1>
       <Screen2>
-        <img src="./imgs/손.png" />
+        <img src="./imgs/home/손.png" />
         <Screen2Box>
           <Screen1BoxTop>솔로라이프, 솔라</Screen1BoxTop>
           <Screen1BoxMid>
@@ -353,12 +353,12 @@ function Home() {
           <Screen1BoxMid>
             자취 꿀팁 커뮤니티로 일상과 큐레이션 정보를 소통하고 공유받아요!
           </Screen1BoxMid>
-          <ImgGun src="./imgs/gun.png" />
-          <ImgPhone src="./imgs/phone.png" />
+          <ImgGun src="./imgs/home/gun.png" />
+          <ImgPhone src="./imgs/home/phone.png" />
         </Screen4Box>
       </Screen4>
       <Screen5>
-        <img src="./imgs/game.png" />
+        <img src="./imgs/home/game.png" />
         <Screen5Box>
           <Screen1BoxTop>솔로 라이프, 솔라</Screen1BoxTop>
           <Screen1BoxMid>
@@ -431,7 +431,7 @@ function Home() {
           </InfoBox>
           <ApplyBtn href="/">솔라 매니저 지원하기</ApplyBtn>
         </Screen6Box>
-        <img src="./imgs/악수.png" />
+        <img src="./imgs/home/악수.png" />
       </Screen6>
       <Circles>
         <Circle1 />

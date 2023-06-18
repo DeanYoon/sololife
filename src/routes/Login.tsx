@@ -116,6 +116,7 @@ function Login() {
         <LoginForm onSubmit={handleSubmit(onValid)}>
           <LoginInput
             {...register("email", { required: true })}
+            type="email"
             placeholder="아이디(이메일)를 입력하세요"
           ></LoginInput>
           <LoginInput

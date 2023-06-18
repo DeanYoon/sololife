@@ -59,7 +59,7 @@ export default function Footer() {
     <Wrapper>
       <Content>
         <Content__Top>
-          <img src="./imgs/Logo_footer.png" />
+          <img src="./imgs/home/Logo_footer.png" />
           <a href="/">이용약관 · 개인정보 취급방침</a>
         </Content__Top>
         <Content__Mid>
