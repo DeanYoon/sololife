@@ -34,11 +34,16 @@ const ProfileInfoBox = styled.div`
   align-items: center;
   justify-content: center;
 `;
-const ProfileInfoBox__Img = styled.img`
+const ProfileInfoBox__Img = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 100%;
   background-color: #feefea;
+  position: relative;
+`;
+const Setting_Icon = styled.div`
+  width: 25px;
+  height: 25px;
 `;
 const ProfileInfoBox__Info = styled.div`
   padding-left: 20px;
@@ -53,40 +58,81 @@ const ProfileInfoBox__Info__info = styled.div`
   padding: 5px;
 `;
 
-
 const Profile__detail = styled.div`
   height: 200px;
-  border: 1px solid black;
   width: 100%;
-`
+  padding: 30px;
+`;
 const Profile__detail__top = styled.div`
   height: 50%;
-  border: 1px solid red;
   width: 100%;
-`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+const Title = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 10px;
+`;
+
+const Point = styled.div`
+  font-size: 20px;
+`;
+
 const Profile__detail__top__point = styled.div`
-  
+  width: 40%;
+  height: 80px;
+`;
 
-`
+const Profile__detail__top__interest = styled.div`
+  width: 60%;
+  height: 80px;
+`;
 
-const Profile__detail__top__interest = styled.div``
+const Interest_Tag = styled.div`
+  display: flex;
 
+  div {
+    background-color: #feefea;
+    font-size: 16px;
+    padding: 3px;
+    margin: 4px;
+    font-weight: 400;
+  }
+`;
 
 const Profile__detail__bottom = styled.div`
- height: 50%;
-  border: 1px solid red;
+  height: 50%;
   width: 100%;
-`
-const Profile__detail__bottom__percentage = styled.div``
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const Profile__detail__bottom__percentage = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
-
+const Percentage = styled.div`
+  height: 15px;
+  border-radius: 10px;
+  width: 400px;
+  background: linear-gradient(to right, #ffb8a3, #ff6433);
+`;
 
 function MyProfile() {
   return (
     <Wrapper>
       <Header>마이페이지</Header>
       <ProfileInfoBox>
-        <ProfileInfoBox__Img />
+        <ProfileInfoBox__Img>
+          <Setting_Icon></Setting_Icon>
+        </ProfileInfoBox__Img>
         <ProfileInfoBox__Info>
           <ProfileInfoBox__Info__name>닉네임</ProfileInfoBox__Info__name>
           <ProfileInfoBox__Info__info>
@@ -96,11 +142,24 @@ function MyProfile() {
       </ProfileInfoBox>
       <Profile__detail>
         <Profile__detail__top>
-          <Profile__detail__top__point></Profile__detail__top__point>
-          <Profile__detail__top__interest></Profile__detail__top__interest>
+          <Profile__detail__top__point>
+            <Title>포인트</Title>
+            <Point>0P</Point>
+          </Profile__detail__top__point>
+          <Profile__detail__top__interest>
+            <Title>관심사</Title>
+            <Interest_Tag>
+              <div>관심소개</div>
+              <div>관심소개</div>
+              <div>관심소개</div>
+            </Interest_Tag>
+          </Profile__detail__top__interest>
         </Profile__detail__top>
         <Profile__detail__bottom>
-          <Profile__detail__bottom__percentage></Profile__detail__bottom__percentage>
+          <Profile__detail__bottom__percentage>
+            <Title>프로필 완성도 100%</Title>
+            <Percentage />
+          </Profile__detail__bottom__percentage>
         </Profile__detail__bottom>
       </Profile__detail>
       <Navigator />
