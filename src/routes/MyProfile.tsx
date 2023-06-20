@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import Navigator from "../components/app/Navigator";
 import { Wrapper } from "../components/app/Styled_Component";
-
-
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 const Header = styled.div`
   height: 77px;
   width: 100%;
@@ -30,9 +29,19 @@ const ProfileInfoBox__Img = styled.div`
   background-color: #feefea;
   position: relative;
 `;
-const Setting_Icon = styled.div`
-  width: 25px;
-  height: 25px;
+const Setting_Icon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  background-color: #ff5f2d;
+  border: 5px solid white;
+  color: white;
+  position: absolute;
+  bottom: -5px;
+  left: -5px;
 `;
 const ProfileInfoBox__Info = styled.div`
   padding-left: 20px;
@@ -51,6 +60,7 @@ const Profile__detail = styled.div`
   height: 200px;
   width: 100%;
   padding: 30px;
+  border-bottom: 15px solid #e1e1e1;
 `;
 const Profile__detail__top = styled.div`
   height: 50%;
@@ -114,13 +124,19 @@ const Percentage = styled.div`
   background: linear-gradient(to right, #ffb8a3, #ff6433);
 `;
 
+const PostsBox = styled.div``;
+const PostsTab = styled.div``;
+const PostsListBox = styled.div``;
+const Post = styled.div``;
 function MyProfile() {
   return (
     <Wrapper>
       <Header>마이페이지</Header>
       <ProfileInfoBox>
         <ProfileInfoBox__Img>
-          <Setting_Icon></Setting_Icon>
+          <Setting_Icon>
+            <FontAwesomeIcon icon={faCog} />{" "}
+          </Setting_Icon>
         </ProfileInfoBox__Img>
         <ProfileInfoBox__Info>
           <ProfileInfoBox__Info__name>닉네임</ProfileInfoBox__Info__name>
@@ -151,6 +167,12 @@ function MyProfile() {
           </Profile__detail__bottom__percentage>
         </Profile__detail__bottom>
       </Profile__detail>
+      <PostsBox>
+        <PostsTab></PostsTab>
+        <PostsListBox>
+          <Post></Post>
+        </PostsListBox>
+      </PostsBox>
       <Navigator />
     </Wrapper>
   );
