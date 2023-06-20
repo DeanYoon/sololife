@@ -89,7 +89,7 @@ export const GoogleLoginButton = () => {
 
           // console.log(data);
 
-          navigate("/");
+          navigate("/myprofile");
         })
         .catch((err) => console.log(err));
     }

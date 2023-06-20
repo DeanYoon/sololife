@@ -1,19 +1,8 @@
 import styled from "styled-components";
 import Navigator from "../components/app/Navigator";
+import { Wrapper } from "../components/app/Styled_Component";
 
-const Wrapper = styled.div`
-  background-color: #fffaf4;
-  max-width: 500px;
-  width: 500px;
-  max-height: 100vh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  background-color: inherit;
-`;
+
 
 const Header = styled.div`
   height: 77px;

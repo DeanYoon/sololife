@@ -159,7 +159,7 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
           };
           setIsLoggedIn(true);
 
-          window.location.href = "/";
+          window.location.href = "/myprofile";
         }
       } catch (error) {
         console.log(error);
