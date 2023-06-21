@@ -124,8 +124,29 @@ const Percentage = styled.div`
   background: linear-gradient(to right, #ffb8a3, #ff6433);
 `;
 
-const PostsBox = styled.div``;
-const PostsTab = styled.div``;
+const PostsBox = styled.div`
+  width: 100%;
+
+`;
+const PostsTab = styled.div`
+  display: flex;
+  width: 100%;
+
+`;
+const MyPostsTab = styled.div`
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: 1000;
+`
+const MarkedPostsTab = styled(MyPostsTab)`
+  border-bottom: 3px solid #ff5f2d;
+  color: #ff5f2d;
+
+`
 const PostsListBox = styled.div``;
 const Post = styled.div``;
 function MyProfile() {
@@ -168,7 +189,10 @@ function MyProfile() {
         </Profile__detail__bottom>
       </Profile__detail>
       <PostsBox>
-        <PostsTab></PostsTab>
+        <PostsTab>
+          <MyPostsTab>내가 쓴 글</MyPostsTab>
+          <MarkedPostsTab>책갈피</MarkedPostsTab>
+        </PostsTab>
         <PostsListBox>
           <Post></Post>
         </PostsListBox>
