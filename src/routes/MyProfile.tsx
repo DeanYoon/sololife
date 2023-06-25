@@ -3,6 +3,7 @@ import Navigator from "../components/app/Navigator";
 import { Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+import Post from "../components/app/Post";
 const Header = styled.div`
   height: 77px;
   width: 100%;
@@ -126,12 +127,10 @@ const Percentage = styled.div`
 
 const PostsBox = styled.div`
   width: 100%;
-
 `;
 const PostsTab = styled.div`
   display: flex;
   width: 100%;
-
 `;
 const MyPostsTab = styled.div`
   width: 50%;
@@ -141,14 +140,17 @@ const MyPostsTab = styled.div`
   padding: 20px;
   font-size: 20px;
   font-weight: 1000;
-`
+`;
 const MarkedPostsTab = styled(MyPostsTab)`
   border-bottom: 3px solid #ff5f2d;
   color: #ff5f2d;
-
-`
-const PostsListBox = styled.div``;
-const Post = styled.div``;
+`;
+const PostsListBox = styled.div`
+  padding: 20px 30px;
+  overflow: scroll;
+  height: 40vh;
+  padding-bottom: 100px;
+`;
 function MyProfile() {
   return (
     <Wrapper>
@@ -194,7 +196,10 @@ function MyProfile() {
           <MarkedPostsTab>책갈피</MarkedPostsTab>
         </PostsTab>
         <PostsListBox>
-          <Post></Post>
+          <Post />
+          <Post />
+          <Post />
+          <Post />
         </PostsListBox>
       </PostsBox>
       <Navigator />
