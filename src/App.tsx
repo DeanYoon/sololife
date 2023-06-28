@@ -13,10 +13,11 @@ import ChangePassword from "./routes/ChangePassword";
 import KakaoCheck from "./routes/KakaoCheck";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { hideBackground } from "./atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { hideBackground, loginState } from "./atoms";
 import Background from "./components/Background";
 import MyProfile from "./routes/MyProfile";
+import AppHome from "./routes/AppHome";
 
 const Container = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ function App() {
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
   const code = new URL(window.location.href);
+  const isLoggedIn = useRecoilValue(loginState);
 
   useEffect(() => {
     const handleResize = () => {
@@ -61,6 +63,7 @@ function App() {
             <Route path="/change-password" element={<ChangePassword />}></Route>
             <Route path="/kakao-login" element={<KakaoCheck />}></Route>
             {/* For App */}
+            <Route path="/home" element={<AppHome />}></Route>
             <Route path="/myprofile" element={<MyProfile />}></Route>
           </Routes>
         </AppScreen>

@@ -4,7 +4,7 @@ import { Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import Post from "../components/app/Post";
-const Header = styled.div`
+export const Header = styled.div`
   height: 77px;
   width: 100%;
   display: flex;
@@ -196,9 +196,6 @@ function MyProfile() {
           <MarkedPostsTab>책갈피</MarkedPostsTab>
         </PostsTab>
         <PostsListBox>
-          <Post />
-          <Post />
-          <Post />
           <Post />
         </PostsListBox>
       </PostsBox>

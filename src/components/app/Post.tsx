@@ -27,7 +27,7 @@ const Post_info_detail = styled.div`
   }
 `;
 
-function Post() {
+function Post({ postData }: any) {
   return (
     <Wrapper>
       <img />

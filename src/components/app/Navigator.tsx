@@ -28,7 +28,7 @@ const ButtonText = styled.p`
 function Navigator() {
   return (
     <Wrapper>
-      <ButtonBox href="/">
+      <ButtonBox href="/home">
         <ButtonIcon src="./imgs/NavBar/home.png" />
         <ButtonText>홈</ButtonText>
       </ButtonBox>
