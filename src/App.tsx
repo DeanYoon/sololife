@@ -26,6 +26,7 @@ const Container = styled.div`
 const AppScreen = styled.div`
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   background-color: white;
+  max-width: 500px;
 `;
 
 function App() {

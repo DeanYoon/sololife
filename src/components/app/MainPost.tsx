@@ -1,4 +1,23 @@
+import {
+  faArrowUp,
+  faArrowUpFromBracket,
+  faHeart,
+  faRepeat,
+  faShare,
+  faBookmark,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShareIcon from "@mui/icons-material/Share";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -31,7 +50,13 @@ const PostContent = styled.div`
     font-size: 20px;
     font-weight: 500;
   }
+  img {
+    width: 100%;
+    height: 400px;
+    border: 1px solid black;
+  }
 `;
+
 const Reaction = styled.div`
   display: flex;
   align-items: center;
@@ -47,9 +72,29 @@ const Reaction = styled.div`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: #767676;
+    span {
+      margin-left: 10px;
+    }
   }
 `;
+const ReactionButton = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #767676;
+`;
 function MainPost() {
+  const [liked, setLiked] = useState(false);
+  const [marked, setMarked] = useState(false);
+  const handleLikeClick = () => {
+    setLiked(!liked);
+  };
+  const handleMarkClick = () => {
+    setMarked(!marked);
+  };
+  useEffect(() => {}, [marked]);
   return (
     <>
       <Wrapper>
@@ -69,10 +114,22 @@ function MainPost() {
           </p>
         </PostContent>
         <Reaction>
-          <div>좋아요</div>
-          <div>리포스트</div>
-          <div>북마크</div>
-          <div>공유하기</div>
+          <ReactionButton onClick={handleLikeClick}>
+            {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            <span>좋아요</span>
+          </ReactionButton>
+          <div>
+            <AutorenewIcon />
+            <span>리포스트</span>
+          </div>
+          <ReactionButton onClick={handleMarkClick}>
+            {marked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+            <span>북마크</span>
+          </ReactionButton>
+          <div>
+            <ShareIcon />
+            <span>공유하기</span>
+          </div>
         </Reaction>
       </Wrapper>
     </>

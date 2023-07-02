@@ -8,7 +8,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
-  width: 500px;
+  max-width: 500px;
+  width: 100%;
   height: 100px;
   display: flex;
   position: fixed;

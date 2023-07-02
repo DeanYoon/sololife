@@ -1,22 +1,9 @@
 import styled from "styled-components";
 import Navigator from "../components/app/Navigator";
-import { Wrapper } from "../components/app/Styled_Component";
+import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import MainPost from "../components/app/MainPost";
-
-const Header = styled.div`
-  height: 77px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 200;
-  font-size: 20px;
-  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
-  position: relative;
-  font-weight: 400;
-`;
 
 const Search = styled.div`
   position: absolute;
@@ -27,7 +14,7 @@ const Search = styled.div`
 
 const BtnWrapper = styled.div`
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -35,6 +22,11 @@ const BtnWrapper = styled.div`
   a {
     cursor: pointer;
   }
+`;
+
+const PostWrapper = styled.div`
+  overflow: scroll;
+  padding-bottom: 100px;
 `;
 
 function AppHome() {
@@ -53,7 +45,14 @@ function AppHome() {
         <a>맛집</a>
         <a>이벤트</a>
       </BtnWrapper>
-      <MainPost />
+      <PostWrapper>
+        <MainPost />
+        <MainPost />
+        <MainPost />
+        <MainPost />
+        <MainPost />
+        <MainPost />
+      </PostWrapper>
       <Navigator />
     </Wrapper>
   );

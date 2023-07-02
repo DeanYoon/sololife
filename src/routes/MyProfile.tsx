@@ -1,19 +1,9 @@
 import styled from "styled-components";
 import Navigator from "../components/app/Navigator";
-import { Wrapper } from "../components/app/Styled_Component";
+import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import Post from "../components/app/Post";
-export const Header = styled.div`
-  height: 77px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 200;
-  font-size: 20px;
-  box-shadow: 1px 1px 10px 1px rgba(0, 0, 0, 0.1);
-`;
 
 const ProfileInfoBox = styled.div`
   height: 160px;
