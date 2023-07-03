@@ -26,12 +26,14 @@ const Container = styled.div`
 const AppScreen = styled.div`
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   background-color: white;
+  width: 100%;
   max-width: 500px;
 `;
 
 function App() {
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
+  const [hideApp, setHideApp] = useState(false);
   const code = new URL(window.location.href);
   const isLoggedIn = useRecoilValue(loginState);
 
@@ -40,6 +42,7 @@ function App() {
       setIsHideBackground(window.innerWidth < 1000);
       if (code.pathname == "/") {
         setIsHideBackground(true);
+        setHideApp(true);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -54,20 +57,25 @@ function App() {
     <Router>
       <Container>
         {isHideBackground ? null : <Background />}
-        <AppScreen>
+        {hideApp ? (
           <Routes>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/signup" element={<Signup />}></Route>
-            <Route path="/signup-done" element={<SignupSuccess />}></Route>
-            <Route path="/find-password" element={<FindPassword />}></Route>
-            <Route path="/change-password" element={<ChangePassword />}></Route>
-            <Route path="/kakao-login" element={<KakaoCheck />}></Route>
-            {/* For App */}
-            <Route path="/home" element={<AppHome />}></Route>
-            <Route path="/myprofile" element={<MyProfile />}></Route>
+            <Route path="/" element={<Home />} />
           </Routes>
-        </AppScreen>
+        ) : (
+          <AppScreen>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/signup-done" element={<SignupSuccess />} />
+              <Route path="/find-password" element={<FindPassword />} />
+              <Route path="/change-password" element={<ChangePassword />} />
+              <Route path="/kakao-login" element={<KakaoCheck />} />
+              {/* For App */}
+              <Route path="/home" element={<AppHome />} />
+              <Route path="/myprofile" element={<MyProfile />} />
+            </Routes>
+          </AppScreen>
+        )}
       </Container>
     </Router>
   );
