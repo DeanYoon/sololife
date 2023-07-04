@@ -70,7 +70,9 @@ function App() {
               <Route path="/find-password" element={<FindPassword />} />
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/kakao-login" element={<KakaoCheck />} />
-              {/* For App */}
+            </Routes>
+            {/* For App */}
+            <Routes>
               <Route path="/home" element={<AppHome />} />
               <Route path="/myprofile" element={<MyProfile />} />
             </Routes>
