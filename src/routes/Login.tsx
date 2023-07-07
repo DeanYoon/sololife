@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import SocialLoginBtns from "../components/SocialLoginBtns";
 import { useForm } from "react-hook-form";
+import {
+  BtnBox,
+  LoginBtn,
+  SignupBtn,
+} from "../components/app/Styled_Component";
 
 const Wrapper = styled.div`
   background-color: #fffaf4;
@@ -53,34 +58,6 @@ const ForgotIDPass = styled.a`
     text-decoration: underline;
     text-decoration-color: #767676;
   }
-`;
-
-const BtnBox = styled.div`
-  margin-top: 30px;
-`;
-
-const LoginBtn = styled.a`
-  width: 400px;
-  height: 56px;
-  border: 1px solid #ff5f2d;
-  color: #ff5f2d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  margin: 8px 0;
-  background-color: white;
-  font-size: 16px;
-  &:hover {
-    color: white;
-    background-color: #ff5f2d;
-  }
-`;
-
-const SignupBtn = styled(LoginBtn)`
-  border: 1px solid #ff5f2d;
-  font-size: 16px;
 `;
 
 const Barrier = styled.div`

@@ -26,7 +26,7 @@ const Container = styled.div`
 const AppScreen = styled.div`
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
   background-color: white;
-  width: 100%;
+  width: 100vw;
   max-width: 500px;
 `;
 
@@ -71,6 +71,7 @@ function App() {
               <Route path="/change-password" element={<ChangePassword />} />
               <Route path="/kakao-login" element={<KakaoCheck />} />
             </Routes>
+
             {/* For App */}
             <Routes>
               <Route path="/home" element={<AppHome />} />

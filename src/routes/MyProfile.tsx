@@ -4,6 +4,9 @@ import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import Post from "../components/app/Post";
+import { useRecoilValue } from "recoil";
+import { loginState } from "../atoms";
+import UnloggedIn from "../components/app/UnloggedIn";
 
 const ProfileInfoBox = styled.div`
   height: 160px;
@@ -142,55 +145,62 @@ const PostsListBox = styled.div`
   padding-bottom: 100px;
 `;
 function MyProfile() {
+  const isLoggedIn = useRecoilValue(loginState);
+
   return (
     <Wrapper>
       <Header>마이페이지</Header>
-      <>
-        <ProfileInfoBox>
-          <ProfileInfoBox__Img>
-            <Setting_Icon>
-              <FontAwesomeIcon icon={faCog} />{" "}
-            </Setting_Icon>
-          </ProfileInfoBox__Img>
-          <ProfileInfoBox__Info>
-            <ProfileInfoBox__Info__name>닉네임</ProfileInfoBox__Info__name>
-            <ProfileInfoBox__Info__info>
-              자기소개입니다.
-            </ProfileInfoBox__Info__info>
-          </ProfileInfoBox__Info>
-        </ProfileInfoBox>
-        <Profile__detail>
-          <Profile__detail__top>
-            <Profile__detail__top__point>
-              <Title>포인트</Title>
-              <Point>0P</Point>
-            </Profile__detail__top__point>
-            <Profile__detail__top__interest>
-              <Title>관심사</Title>
-              <Interest_Tag>
-                <div>관심소개</div>
-                <div>관심소개</div>
-                <div>관심소개</div>
-              </Interest_Tag>
-            </Profile__detail__top__interest>
-          </Profile__detail__top>
-          <Profile__detail__bottom>
-            <Profile__detail__bottom__percentage>
-              <Title>프로필 완성도 100%</Title>
-              <Percentage />
-            </Profile__detail__bottom__percentage>
-          </Profile__detail__bottom>
-        </Profile__detail>
-        <PostsBox>
-          <PostsTab>
-            <MyPostsTab>내가 쓴 글</MyPostsTab>
-            <MarkedPostsTab>책갈피</MarkedPostsTab>
-          </PostsTab>
-          <PostsListBox>
-            <Post />
-          </PostsListBox>
-        </PostsBox>
-      </>
+      {isLoggedIn ? (
+        <>
+          <ProfileInfoBox>
+            <ProfileInfoBox__Img>
+              <Setting_Icon>
+                <FontAwesomeIcon icon={faCog} />{" "}
+              </Setting_Icon>
+            </ProfileInfoBox__Img>
+            <ProfileInfoBox__Info>
+              <ProfileInfoBox__Info__name>닉네임</ProfileInfoBox__Info__name>
+              <ProfileInfoBox__Info__info>
+                자기소개입니다.
+              </ProfileInfoBox__Info__info>
+            </ProfileInfoBox__Info>
+          </ProfileInfoBox>
+          <Profile__detail>
+            <Profile__detail__top>
+              <Profile__detail__top__point>
+                <Title>포인트</Title>
+                <Point>0P</Point>
+              </Profile__detail__top__point>
+              <Profile__detail__top__interest>
+                <Title>관심사</Title>
+                <Interest_Tag>
+                  <div>관심소개</div>
+                  <div>관심소개</div>
+                  <div>관심소개</div>
+                </Interest_Tag>
+              </Profile__detail__top__interest>
+            </Profile__detail__top>
+            <Profile__detail__bottom>
+              <Profile__detail__bottom__percentage>
+                <Title>프로필 완성도 100%</Title>
+                <Percentage />
+              </Profile__detail__bottom__percentage>
+            </Profile__detail__bottom>
+          </Profile__detail>
+          <PostsBox>
+            <PostsTab>
+              <MyPostsTab>내가 쓴 글</MyPostsTab>
+              <MarkedPostsTab>책갈피</MarkedPostsTab>
+            </PostsTab>
+            <PostsListBox>
+              <Post />
+            </PostsListBox>
+          </PostsBox>
+        </>
+      ) : (
+        <UnloggedIn />
+      )}
+
       <Navigator />
     </Wrapper>
   );
