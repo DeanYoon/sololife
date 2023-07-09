@@ -48,7 +48,7 @@ function Navigator() {
         />
         <ButtonText>홈</ButtonText>
       </ButtonBox>
-      <ButtonBox href="/">
+      <ButtonBox href="/new-post">
         <EditOutlinedIcon fontSize="large" />
         <ButtonText>글쓰기</ButtonText>
       </ButtonBox>

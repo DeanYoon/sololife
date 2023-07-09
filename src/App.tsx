@@ -18,6 +18,7 @@ import { hideBackground, loginState } from "./atoms";
 import Background from "./components/Background";
 import MyProfile from "./routes/MyProfile";
 import AppHome from "./routes/AppHome";
+import NewPost from "./routes/NewPost";
 
 const Container = styled.div`
   display: flex;
@@ -76,6 +77,7 @@ function App() {
             <Routes>
               <Route path="/home" element={<AppHome />} />
               <Route path="/myprofile" element={<MyProfile />} />
+              <Route path="/new-post" element={<NewPost />} />
             </Routes>
           </AppScreen>
         )}

@@ -16,7 +16,9 @@ export const Wrapper = styled.div`
 `;
 
 export const Header = styled.div`
-  min-height: 77px;
+  min-height: 60px;
+  max-height: 77px;
+  height: 10vh;
   width: 100%;
   display: flex;
   justify-content: center;
