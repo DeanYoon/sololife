@@ -5,6 +5,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MoodIcon from "@mui/icons-material/Mood";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import GifBox from "@mui/icons-material/GifBox";
+import { useNavigate } from "react-router-dom";
 
 const MainTop = styled.div`
   padding: 30px;
@@ -72,6 +73,7 @@ const MainBottom = styled.textarea`
   outline: none;
   resize: none;
   border-bottom: 1px solid #d9d9d9;
+  font-size: 16px;
 `;
 
 const PostBottom = styled.div`
@@ -91,6 +93,8 @@ const PostBottom = styled.div`
 `;
 
 function NewPost() {
+  const navigate = useNavigate();
+
   const handleMoodIconClick = () => {
     console.log("hi");
   };
@@ -100,13 +104,17 @@ function NewPost() {
   const handleAddPhotoIconClick = () => {
     console.log("hi");
   };
+
+  const handleCloseIconClick = () => {
+    navigate("/home");
+  };
   return (
     <Wrapper>
       <Header>글쓰기</Header>
 
       <MainTop>
         <HeaderSection>
-          <CloseBtn>
+          <CloseBtn onClick={handleCloseIconClick}>
             <CloseIcon />
           </CloseBtn>
 

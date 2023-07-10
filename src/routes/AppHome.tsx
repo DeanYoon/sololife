@@ -4,6 +4,8 @@ import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import MainPost from "../components/app/MainPost";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Search = styled.div`
   position: absolute;
@@ -30,6 +32,27 @@ const PostWrapper = styled.div`
 `;
 
 function AppHome() {
+  // API : https://port-0-area-node-express-r8xoo2mledsvukh.sel3.cloudtype.app//users/readPost?id=30
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    // Define the API URL
+    const apiUrl =
+      "https://port-0-area-node-express-r8xoo2mledsvukh.sel3.cloudtype.app/users/readPost?id=10";
+
+    // Make the API request
+    axios
+      .post(apiUrl)
+      .then((response) => {
+        // Handle the API response
+        setPosts(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error fetching posts:", error);
+      });
+  }, []);
+
   return (
     <Wrapper>
       <Header>
