@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { Header, Wrapper } from "../components/app/Styled_Component";
 import CloseIcon from "@mui/icons-material/Close";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import CalendarIcon from "@mui/icons-material/CalendarToday";
+import LocationIcon from "@mui/icons-material/LocationOn";
 import MoodIcon from "@mui/icons-material/Mood";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import GifBox from "@mui/icons-material/GifBox";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const MainTop = styled.div`
   padding: 30px;
@@ -22,36 +24,16 @@ const HeaderSection = styled.div`
 const CloseBtn = styled.div`
   cursor: pointer;
 `;
-const Btns = styled.div`
-  display: flex;
-  justify-content: space-between;
 
-  div {
-    width: 80px;
-    height: 30px;
-    border: 2px solid tomato;
-    border-radius: 30px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 5px;
-    transition: background-color 0.1s ease-in-out;
-    cursor: pointer;
-    font-weight: bold;
-    color: tomato;
-    &:hover {
-      background-color: tomato;
-      color: white;
-    }
-  }
-`;
 const MidSection = styled.div``;
 const CategorySelection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  font-weight: 500;
   margin: 20px 0;
+  svg {
+    cursor: pointer;
+  }
 `;
 const Title = styled.input`
   border: none;
@@ -77,34 +59,61 @@ const MainBottom = styled.textarea`
 `;
 
 const PostBottom = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   color: tomato;
-
+  padding: 20px;
   div {
-    width: 50%;
+    width: 60%;
     display: flex;
     align-items: start;
     justify-content: space-around;
-    padding: 20px;
+
     svg {
       cursor: pointer;
     }
   }
 `;
 
+const Btns = styled.button`
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
+  height: 30px;
+  border: none;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.1s ease-in-out;
+  cursor: pointer;
+  font-weight: bold;
+
+  background-color: tomato;
+  color: white;
+  &:hover {
+    background-color: white;
+    color: tomato;
+    border: 2px solid tomato;
+  }
+`;
+
 function NewPost() {
   const navigate = useNavigate();
-
+  const [expand, setExpand] = useState(false);
   const handleMoodIconClick = () => {
     console.log("hi");
   };
-  const handleGifIconClick = () => {
-    console.log("hi");
-  };
+
   const handleAddPhotoIconClick = () => {
     console.log("hi");
   };
-
+  const handleExpandIconClick = () => {
+    setExpand(true);
+  };
+  console.log(expand);
   const handleCloseIconClick = () => {
     navigate("/home");
   };
@@ -117,16 +126,15 @@ function NewPost() {
           <CloseBtn onClick={handleCloseIconClick}>
             <CloseIcon />
           </CloseBtn>
-
-          <Btns>
-            <div>임시보관</div>
-            <div>작성</div>
-          </Btns>
         </HeaderSection>
         <MidSection>
           <CategorySelection>
-            <span>게시판 선택</span>
-            <ChevronRightIcon />
+            <select name="게시판 선택">
+              <option value={"게시판 선택"}>게시판 선택</option>
+              <option value={"집렌트"}>집렌트</option>
+              <option value={"중고물품"}>중고물품</option>
+              <option value={"맛집"}>맛집</option>
+            </select>
           </CategorySelection>
           <Title placeholder="제목을 입력해주세요" />
         </MidSection>
@@ -136,12 +144,14 @@ function NewPost() {
       <PostBottom>
         <div>
           <MoodIcon fontSize={"large"} onClick={handleMoodIconClick} />
-          <GifBox fontSize={"large"} onClick={handleGifIconClick} />
           <AddPhotoAlternateIcon
             fontSize={"large"}
             onClick={handleAddPhotoIconClick}
           />
+          <CalendarIcon fontSize={"large"} />
+          <LocationIcon fontSize={"large"} />
         </div>
+        <Btns>작성</Btns>
       </PostBottom>
     </Wrapper>
   );
