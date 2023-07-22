@@ -7,7 +7,7 @@ import LocationIcon from "@mui/icons-material/LocationOn";
 import MoodIcon from "@mui/icons-material/Mood";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const MainTop = styled.div`
   padding: 30px;
@@ -103,6 +103,8 @@ const Btns = styled.button`
 function NewPost() {
   const navigate = useNavigate();
   const [expand, setExpand] = useState(false);
+  const dataToSendRef = useRef(null);
+
   const handleMoodIconClick = () => {
     console.log("hi");
   };
@@ -113,9 +115,12 @@ function NewPost() {
   const handleExpandIconClick = () => {
     setExpand(true);
   };
-  console.log(expand);
   const handleCloseIconClick = () => {
     navigate("/home");
+  };
+  const handleBtnClick = () => {
+    const dataToSend = dataToSendRef.current;
+    console.log(dataToSend);
   };
   return (
     <Wrapper>
@@ -140,7 +145,7 @@ function NewPost() {
         </MidSection>
         <BottomSection></BottomSection>
       </MainTop>
-      <MainBottom />
+      <MainBottom ref={dataToSendRef} placeholder="내용을 입력하세요." />
       <PostBottom>
         <div>
           <MoodIcon fontSize={"large"} onClick={handleMoodIconClick} />
@@ -151,7 +156,7 @@ function NewPost() {
           <CalendarIcon fontSize={"large"} />
           <LocationIcon fontSize={"large"} />
         </div>
-        <Btns>작성</Btns>
+        <Btns onClick={handleBtnClick}>작성</Btns>
       </PostBottom>
     </Wrapper>
   );

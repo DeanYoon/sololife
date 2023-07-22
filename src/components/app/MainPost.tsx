@@ -85,9 +85,23 @@ const ReactionButton = styled.div`
   cursor: pointer;
   color: #767676;
 `;
-function MainPost() {
+
+// Define the type for the props
+export interface MainPostProps {
+  id: number;
+  profileImg?: string;
+  image?: string;
+  username: string;
+  date: string;
+  title: string;
+  content: string;
+  upVote?: number;
+}
+
+function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
+
   const handleLikeClick = () => {
     setLiked(!liked);
   };
@@ -95,23 +109,25 @@ function MainPost() {
     setMarked(!marked);
   };
   useEffect(() => {}, [marked]);
+  const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
   return (
     <>
-      <Wrapper>
+      <Wrapper key={props.id + ""}>
         <PostOwner>
-          <img />
+          <img src="/" />
           <OwnerInfo>
-            <h1>닉네임</h1>
-            <div>2023.06.21</div>
+            <h1>{props.username}</h1>
+            <div>{formattedDate}</div>
           </OwnerInfo>
         </PostOwner>
         <PostContent>
-          <h1>{"<제목>"}</h1>
-          <img />
-          <p>
-            본문 내용 예시: 품에 동산에는 산야에 우리 아름다우냐? 얼마나 사람은
-            것이 새 목숨이 있다.
-          </p>
+          <h1>{props.title}</h1>
+          {props.image && <img src={`${props.image}`} />}
+          <p>{props.content}</p>
         </PostContent>
         <Reaction>
           <ReactionButton onClick={handleLikeClick}>
