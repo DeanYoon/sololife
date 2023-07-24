@@ -27,6 +27,7 @@ const BtnWrapper = styled.div`
 `;
 
 const PostWrapper = styled.div`
+  width: 100%;
   overflow: scroll;
   padding-bottom: 100px;
 `;
@@ -78,7 +79,7 @@ function AppHome() {
         {posts.map((post: MainPostProps) => (
           <MainPost
             id={post.id}
-            profileImg={post.profileImg}
+            profile_image={post.profile_image}
             username={post.username}
             date={post.date}
             title={post.title}

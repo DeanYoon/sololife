@@ -89,7 +89,7 @@ const ReactionButton = styled.div`
 // Define the type for the props
 export interface MainPostProps {
   id: number;
-  profileImg?: string;
+  profile_image?: string;
   image?: string;
   username: string;
   date: string;
@@ -114,11 +114,14 @@ function MainPost(props: MainPostProps) {
     month: "2-digit",
     day: "2-digit",
   });
+  console.log(props.profile_image);
   return (
     <>
       <Wrapper key={props.id + ""}>
         <PostOwner>
-          <img src="/" />
+          {/* <img src={`${props.profile_image}`} /> */}
+          <img src={`${props.profile_image}`} alt="Image" />
+
           <OwnerInfo>
             <h1>{props.username}</h1>
             <div>{formattedDate}</div>
