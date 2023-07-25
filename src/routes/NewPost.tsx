@@ -8,6 +8,10 @@ import MoodIcon from "@mui/icons-material/Mood";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { loginState } from "../atoms";
+import UnloggedIn from "../components/app/UnloggedIn";
+import Navigator from "../components/app/Navigator";
 
 const MainTop = styled.div`
   padding: 30px;
@@ -104,6 +108,7 @@ function NewPost() {
   const navigate = useNavigate();
   const [expand, setExpand] = useState(false);
   const dataToSendRef = useRef(null);
+  const isLoggedIn = useRecoilValue(loginState);
 
   const handleMoodIconClick = () => {
     console.log("hi");
@@ -120,44 +125,49 @@ function NewPost() {
   };
   const handleBtnClick = () => {
     const dataToSend = dataToSendRef.current;
-    console.log(dataToSend);
   };
   return (
     <Wrapper>
       <Header>글쓰기</Header>
-
-      <MainTop>
-        <HeaderSection>
-          <CloseBtn onClick={handleCloseIconClick}>
-            <CloseIcon />
-          </CloseBtn>
-        </HeaderSection>
-        <MidSection>
-          <CategorySelection>
-            <select name="게시판 선택">
-              <option value={"게시판 선택"}>게시판 선택</option>
-              <option value={"집렌트"}>집렌트</option>
-              <option value={"중고물품"}>중고물품</option>
-              <option value={"맛집"}>맛집</option>
-            </select>
-          </CategorySelection>
-          <Title placeholder="제목을 입력해주세요" />
-        </MidSection>
-        <BottomSection></BottomSection>
-      </MainTop>
-      <MainBottom ref={dataToSendRef} placeholder="내용을 입력하세요." />
-      <PostBottom>
-        <div>
-          <MoodIcon fontSize={"large"} onClick={handleMoodIconClick} />
-          <AddPhotoAlternateIcon
-            fontSize={"large"}
-            onClick={handleAddPhotoIconClick}
-          />
-          <CalendarIcon fontSize={"large"} />
-          <LocationIcon fontSize={"large"} />
-        </div>
-        <Btns onClick={handleBtnClick}>작성</Btns>
-      </PostBottom>
+      {isLoggedIn ? (
+        <>
+          <MainTop>
+            <HeaderSection>
+              <CloseBtn onClick={handleCloseIconClick}>
+                <CloseIcon />
+              </CloseBtn>
+            </HeaderSection>
+            <MidSection>
+              <CategorySelection>
+                <select name="게시판 선택">
+                  <option value={"게시판 선택"}>게시판 선택</option>
+                  <option value={"집렌트"}>집렌트</option>
+                  <option value={"중고물품"}>중고물품</option>
+                  <option value={"맛집"}>맛집</option>
+                </select>
+              </CategorySelection>
+              <Title placeholder="제목을 입력해주세요" />
+            </MidSection>
+            <BottomSection></BottomSection>
+          </MainTop>
+          <MainBottom ref={dataToSendRef} placeholder="내용을 입력하세요." />
+          <PostBottom>
+            <div>
+              <MoodIcon fontSize={"large"} onClick={handleMoodIconClick} />
+              <AddPhotoAlternateIcon
+                fontSize={"large"}
+                onClick={handleAddPhotoIconClick}
+              />
+              <CalendarIcon fontSize={"large"} />
+              <LocationIcon fontSize={"large"} />
+            </div>
+            <Btns onClick={handleBtnClick}>작성</Btns>
+          </PostBottom>
+        </>
+      ) : (
+        <UnloggedIn />
+      )}
+      <Navigator />
     </Wrapper>
   );
 }

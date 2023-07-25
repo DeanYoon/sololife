@@ -57,9 +57,6 @@ function AppHome() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log(posts);
-  }, [posts]);
   return (
     <Wrapper>
       <Header>

@@ -18,6 +18,9 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { useRecoilValue } from "recoil";
+import { UserData as UserAtom, loginState } from "../../atoms";
+import axios from "axios";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -95,29 +98,54 @@ export interface MainPostProps {
   date: string;
   title: string;
   content: string;
-  upVote?: number;
+  upVote: string;
 }
 
 function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
-
+  const [upVoteCount, setUpVoteCount] = useState(0);
+  const UserData = useRecoilValue(UserAtom);
+  const apiUrl = "http://localhost:3001"; // Change this URL to your actual server URL
   const handleLikeClick = () => {
     setLiked(!liked);
+
+    // Define the request data (start and listn in your case)
+    const requestData = {
+      postId: props.id,
+      userEmail: "yjs6300@kakao.com",
+    };
+
+    axios
+      .post(`${apiUrl}/likePost`, requestData)
+      .then((response) => {
+        // Handle the API response
+        console.log(response);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error fetching posts:", error);
+      });
   };
+
   const handleMarkClick = () => {
     setMarked(!marked);
   };
-  useEffect(() => {}, [marked]);
+
   const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-  console.log(props.profile_image);
+
+  useEffect(() => {
+    const emailArray = props.upVote.split(",");
+    setUpVoteCount(emailArray.length - 1);
+  }, []);
+
   return (
     <>
-      <Wrapper key={props.id + ""}>
+      <Wrapper key={props.id}>
         <PostOwner>
           {/* <img src={`${props.profile_image}`} /> */}
           <img src={`${props.profile_image}`} alt="Image" />
@@ -135,7 +163,7 @@ function MainPost(props: MainPostProps) {
         <Reaction>
           <ReactionButton onClick={handleLikeClick}>
             {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            <span>좋아요</span>
+            <span>좋아요{upVoteCount}</span>
           </ReactionButton>
           <div>
             <AutorenewIcon />
