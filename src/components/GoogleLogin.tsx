@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUserData, IUserDataSaveData } from "./KakaoLogin";
 import { UserData, loginState } from "../atoms";
+import { DOMAIN_URL } from "./api";
 
 const GoogleLoginWrapper = styled.div`
   width: 100%;
@@ -47,7 +48,7 @@ export const GoogleLoginButton = () => {
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
-  const apiUrl = "http://localhost:3001";
+
   useEffect(() => {
     if (user) {
       axios
@@ -63,7 +64,7 @@ export const GoogleLoginButton = () => {
         .then(async (res) => {
           const { email } = res.data;
           axios
-            .get(`${apiUrl}/checkEmail/${email}`)
+            .get(`${DOMAIN_URL}/checkEmail/${email}`)
             .then((response) => {
               const { id, profile_image, username } = response.data.data;
               setUserData({

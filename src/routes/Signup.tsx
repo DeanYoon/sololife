@@ -8,8 +8,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { hashPassword } from "../components/hash";
 import bcrypt from "bcryptjs";
-import { postInsertUserData } from "../components/api";
+import { DOMAIN_URL, postInsertUserData } from "../components/api";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { UserData, loginState } from "../atoms";
 const Wrapper = styled.div`
   background-color: #fffaf4;
   max-width: 500px;
@@ -134,6 +137,9 @@ interface IFormData {
 }
 
 function Signup() {
+  const setIsLoggedIn = useSetRecoilState(loginState);
+  const [userData, setUserData] = useRecoilState(UserData);
+
   const {
     register,
     handleSubmit,
@@ -142,21 +148,56 @@ function Signup() {
   } = useForm({
     mode: "onChange",
   });
+  const hasSpecialCharacter = (value: string) => {
+    return /[!@#\$%\^&\*_\-=]/.test(value);
+  };
   const { email, name, password, checkPassword } = watch();
   const navigate = useNavigate();
   const onValid = async (data: any) => {
     if (password === checkPassword) {
       const hashedPassword = await hashPassword(data.password);
-      const userData = {
+      const checkData = {
         email: data.email,
-        password: hashedPassword,
+        username: data.name,
       };
 
-      const insertResult = await postInsertUserData(userData);
-      console.log(insertResult?.data.message);
-      if (insertResult?.data.message !== "NG") {
-        navigate("/signup-done");
+      try {
+        const response = await axios.post(
+          `${DOMAIN_URL}/checkAvailability`,
+          checkData
+        );
+
+        if (!response.data.email.available) {
+          alert("사용중인 이메일입니다.");
+        } else if (!response.data.username.available) {
+          alert("사용중인 이름입니다.");
+        } else {
+          const userData = {
+            ...checkData,
+            password: hashedPassword,
+            profile_image: "",
+          };
+          const response = await axios.post(`${DOMAIN_URL}/insert`, userData);
+          const { id, username, email, profile_image } = response.data.data;
+          setIsLoggedIn(true);
+          setUserData({
+            id,
+            username,
+            userEmail: email,
+            profileImg: profile_image,
+          });
+          navigate("/home");
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
+
+      // console.log(userData);user
+      // const insertResult = await postInsertUserData(userData);
+      // console.log(insertResult?.data.message);
+      // if (insertResult?.data.message !== "NG") {
+      //   navigate("/signup-done");
+      // }
     } else {
       alert("다시 입력하십시오");
     }
@@ -228,8 +269,19 @@ function Signup() {
           </InputBox>
           <InputBox>
             <LoginInput
-              {...register("password", { required: "Add Password" })}
-              placeholder="비밀번호"
+              {...register("password", {
+                required: "Add Password",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters long",
+                },
+                validate: {
+                  hasSpecialCharacter: (value) =>
+                    hasSpecialCharacter(value) ||
+                    "Password must contain at least one special character like !@#$%^&*_-=",
+                },
+              })}
+              placeholder="비밀번호 (기호 포함 8자 이상)"
               type="password"
             ></LoginInput>
             <InputValidation>

@@ -6,6 +6,7 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import axios from "axios";
 import { UserData, loginState } from "../atoms";
+import { DOMAIN_URL } from "./api";
 
 const KakaoButton = styled.button`
   width: 100%;
@@ -92,7 +93,6 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const [userData, setUserData] = useRecoilState(UserData);
   const navigate = useNavigate();
-  const apiUrl = "http://localhost:3001";
 
   useEffect(() => {
     const baseUrl = "https://kauth.kakao.com/oauth/token";
@@ -133,7 +133,7 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
           } = userDataFromKakao.data;
 
           axios
-            .get(`${apiUrl}/checkEmail/${email}`)
+            .get(`${DOMAIN_URL}/checkEmail/${email}`)
             .then((response) => {
               const { id, profile_image, username } = response.data.data;
               setUserData({
