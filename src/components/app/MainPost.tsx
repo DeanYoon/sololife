@@ -105,6 +105,7 @@ function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
+
   const GlobalUserData = useRecoilValue(UserAtom);
   const apiUrl = "http://localhost:3001"; // Change this URL to your actual server URL
   const handleLikeClick = () => {
@@ -120,11 +121,25 @@ function MainPost(props: MainPostProps) {
       .post(`${apiUrl}/likePost`, requestData)
       .then((response) => {
         // Handle the API response
-        console.log(response);
+        const responseData = response.data;
+        if (responseData.message === "OK") {
+          // Check if the post was already liked
+          if (liked) {
+            // Post was already liked, so decrement upVote by 1
+            // Update the upVote state to reflect the change
+            setUpVoteCount((prevUpVote) => prevUpVote - 1);
+          } else {
+            // Post was not liked, so increment upVote by 1
+            // Update the upVote state to reflect the change
+            setUpVoteCount((prevUpVote) => prevUpVote + 1);
+          }
+        } else {
+          console.log("Error liking post:", responseData.message);
+        }
       })
       .catch((error) => {
         // Handle any errors
-        console.error("Error fetching posts:", error);
+        console.error("Error liking post:", error);
       });
   };
 
@@ -140,6 +155,10 @@ function MainPost(props: MainPostProps) {
 
   useEffect(() => {
     const emailArray = props.upVote.split(",");
+
+    if (emailArray.includes(GlobalUserData.id.toString())) {
+      setLiked(true);
+    }
     setUpVoteCount(emailArray.length - 1);
   }, []);
 
