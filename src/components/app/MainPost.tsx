@@ -64,19 +64,20 @@ const Reaction = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 10px;
   margin-top: 10px;
 
-  div {
+  > div {
     background-color: inherit;
+
     border: none;
-    width: 25%;
+    width: 23%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     cursor: pointer;
     color: #767676;
-    span {
+    > span {
       margin-left: 10px;
     }
   }
@@ -85,8 +86,21 @@ const ReactionButton = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   color: #767676;
+`;
+
+const LikeBtn = styled.span`
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+  width: 70px;
+  span {
+  }
+  span:last-child {
+    width: 20px;
+  }
 `;
 
 // Define the type for the props
@@ -122,6 +136,7 @@ function MainPost(props: MainPostProps) {
       .then((response) => {
         // Handle the API response
         const responseData = response.data;
+        console.log(response.data);
         if (responseData.message === "OK") {
           // Check if the post was already liked
           if (liked) {
@@ -182,7 +197,10 @@ function MainPost(props: MainPostProps) {
         <Reaction>
           <ReactionButton onClick={handleLikeClick}>
             {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            <span>좋아요{upVoteCount}</span>
+            <LikeBtn>
+              <span>좋아요</span>
+              <span>{upVoteCount}</span>
+            </LikeBtn>
           </ReactionButton>
           <div>
             <AutorenewIcon />
