@@ -3,7 +3,7 @@ import Navigator from "../components/app/Navigator";
 import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import Post from "../components/app/Post";
+import PostLiked from "../components/app/PostLiked";
 import { useRecoilValue } from "recoil";
 import { loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
@@ -193,7 +193,7 @@ function MyProfile() {
               <MarkedPostsTab>책갈피</MarkedPostsTab>
             </PostsTab>
             <PostsListBox>
-              <Post />
+              <PostLiked />
             </PostsListBox>
           </PostsBox>
         </>

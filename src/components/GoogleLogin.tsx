@@ -47,6 +47,7 @@ export const GoogleLoginButton = () => {
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
+  const apiUrl = "http://localhost:3001";
   useEffect(() => {
     if (user) {
       axios
@@ -60,36 +61,54 @@ export const GoogleLoginButton = () => {
           }
         )
         .then(async (res) => {
-          const { id, email, picture, name } = res.data;
+          const { email } = res.data;
+          axios
+            .get(`${apiUrl}/checkEmail/${email}`)
+            .then((response) => {
+              const { id, profile_image, username } = response.data.data;
+              setUserData({
+                id,
+                username,
+                userEmail: email,
+                profileImg: profile_image,
+              });
+              setIsLoggedIn(true);
+              navigate("/home");
+            })
+            .catch((error) => {
+              console.log(error);
+              navigate("/login");
+            });
 
-          const loggedInUserData: IUserData = {
-            id,
-            email,
-            nickname: name,
-            profile_image: picture,
-          };
-          const loggedInUserDataAll: IUserDataSaveData = {
-            nickname: name,
-            birthday: "asd",
-            phone: "",
-            gender: "male",
-            cities_code: 0,
-            address: "",
-            profile_image: picture,
-          };
+          // const loggedInUserData: IUserData = {
+          //   id,
+          //   email,
+          //   nickname: name,
+          //   profile_image: picture,
+          // };
+          // console.log(loggedInUserData);
+          // const loggedInUserDataAll: IUserDataSaveData = {
+          //   nickname: name,
+          //   birthday: "asd",
+          //   phone: "",
+          //   gender: "male",
+          //   cities_code: 0,
+          //   address: "",
+          //   profile_image: picture,
+          // };
 
-          sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
-          setIsLoggedIn(true);
-          setUserData(name);
-          const data = {
-            email,
-            password: "00000000",
-            profile_img: picture,
-          };
+          // sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
+          // setIsLoggedIn(true);
+          // setUserData(name);
+          // const data = {
+          //   email,
+          //   password: "00000000",
+          //   profile_img: picture,
+          // };
 
           // console.log(data);
 
-          navigate("/myprofile");
+          // navigate("/myprofile");
         })
         .catch((err) => console.log(err));
     }

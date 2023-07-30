@@ -16,14 +16,18 @@ export const loginState = atom({
 });
 
 interface UserData {
+  id: string;
   username: string;
   userEmail: string;
+  profileImg: string;
 }
 export const UserData = atom<UserData>({
   key: "UserData",
   default: {
+    id: "",
     username: "",
     userEmail: "",
+    profileImg: "",
   },
   effects_UNSTABLE: [persistAtom],
 });

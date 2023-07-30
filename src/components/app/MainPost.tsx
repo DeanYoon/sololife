@@ -105,7 +105,7 @@ function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
-  const UserData = useRecoilValue(UserAtom);
+  const GlobalUserData = useRecoilValue(UserAtom);
   const apiUrl = "http://localhost:3001"; // Change this URL to your actual server URL
   const handleLikeClick = () => {
     setLiked(!liked);
@@ -113,7 +113,7 @@ function MainPost(props: MainPostProps) {
     // Define the request data (start and listn in your case)
     const requestData = {
       postId: props.id,
-      userEmail: "yjs6300@kakao.com",
+      userId: GlobalUserData.id,
     };
 
     axios

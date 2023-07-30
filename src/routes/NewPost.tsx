@@ -12,6 +12,11 @@ import { useRecoilValue } from "recoil";
 import { loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
 import Navigator from "../components/app/Navigator";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+const PostForm = styled.form`
+  width: 100%;
+`;
 
 const MainTop = styled.div`
   padding: 30px;
@@ -38,6 +43,13 @@ const CategorySelection = styled.div`
   svg {
     cursor: pointer;
   }
+
+  select {
+    font-size: 18px;
+    border: none;
+    font-weight: 300;
+    padding-right: 10px;
+  }
 `;
 const Title = styled.input`
   border: none;
@@ -49,12 +61,11 @@ const Title = styled.input`
   }
 `;
 
-const BottomSection = styled.div``;
-
 const MainBottom = styled.textarea`
   padding: 30px;
+  box-sizing: border-box;
   width: 100%;
-  height: 80vh;
+  height: 70vh;
   border: none;
   outline: none;
   resize: none;
@@ -62,23 +73,28 @@ const MainBottom = styled.textarea`
   font-size: 16px;
 `;
 
-const PostBottom = styled.div`
+const BottomBar = styled.div`
+  padding: 20px;
+  height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   color: tomato;
-  padding: 20px;
+
   div {
     width: 60%;
     display: flex;
     align-items: start;
     justify-content: space-around;
-
     svg {
       cursor: pointer;
     }
   }
+`;
+
+const HiddenFileUploader = styled.input`
+  display: none;
 `;
 
 const Btns = styled.button`
@@ -94,7 +110,6 @@ const Btns = styled.button`
   transition: background-color 0.1s ease-in-out;
   cursor: pointer;
   font-weight: bold;
-
   background-color: tomato;
   color: white;
   &:hover {
@@ -104,33 +119,48 @@ const Btns = styled.button`
   }
 `;
 
+interface FormData {
+  hashtags: string;
+  title: string;
+  content: string;
+  email: string;
+  images?: FileList;
+}
 function NewPost() {
   const navigate = useNavigate();
-  const [expand, setExpand] = useState(false);
-  const dataToSendRef = useRef(null);
+  const [hashTag, sethashTag] = useState<string>("");
   const isLoggedIn = useRecoilValue(loginState);
+  const { register, handleSubmit, watch } = useForm({ mode: "onSubmit" });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [image, setImage] = useState<FileList | null>(null);
+  const onSubmit = (data: any) => {
+    // Handle form submission here
+    console.log({ ...data, hashTag, image });
+  };
 
   const handleMoodIconClick = () => {
     console.log("hi");
   };
 
-  const handleAddPhotoIconClick = () => {
-    console.log("hi");
-  };
-  const handleExpandIconClick = () => {
-    setExpand(true);
+  const handleAddPhotoIconClick = (event: any) => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Trigger the click event on the file input
+    }
   };
   const handleCloseIconClick = () => {
     navigate("/home");
   };
-  const handleBtnClick = () => {
-    const dataToSend = dataToSendRef.current;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+
+    setImage(files);
   };
+
   return (
     <Wrapper>
       <Header>글쓰기</Header>
       {isLoggedIn ? (
-        <>
+        <PostForm onSubmit={handleSubmit(onSubmit)}>
           <MainTop>
             <HeaderSection>
               <CloseBtn onClick={handleCloseIconClick}>
@@ -139,35 +169,49 @@ function NewPost() {
             </HeaderSection>
             <MidSection>
               <CategorySelection>
-                <select name="게시판 선택">
-                  <option value={"게시판 선택"}>게시판 선택</option>
-                  <option value={"집렌트"}>집렌트</option>
-                  <option value={"중고물품"}>중고물품</option>
-                  <option value={"맛집"}>맛집</option>
+                <select
+                  name="category"
+                  onChange={(e) => sethashTag(e.target.value)}
+                >
+                  <option value="">게시판 선택</option>
+                  <option value="1">집렌트</option>
+                  <option value="2">중고물품</option>
+                  <option value="3">맛집</option>
                 </select>
               </CategorySelection>
-              <Title placeholder="제목을 입력해주세요" />
+              <Title
+                placeholder="제목을 입력해주세요"
+                {...register("title", { required: true })}
+              />
             </MidSection>
-            <BottomSection></BottomSection>
           </MainTop>
-          <MainBottom ref={dataToSendRef} placeholder="내용을 입력하세요." />
-          <PostBottom>
+          <MainBottom
+            {...register("content", { required: true })}
+            placeholder="내용을 입력하세요."
+          />
+          <BottomBar>
             <div>
               <MoodIcon fontSize={"large"} onClick={handleMoodIconClick} />
               <AddPhotoAlternateIcon
                 fontSize={"large"}
                 onClick={handleAddPhotoIconClick}
               />
+              <HiddenFileUploader
+                type="file"
+                accept="image/*"
+                {...register("image")}
+                ref={(e) => (fileInputRef.current = e)}
+                onChange={handleFileChange}
+              />
               <CalendarIcon fontSize={"large"} />
               <LocationIcon fontSize={"large"} />
             </div>
-            <Btns onClick={handleBtnClick}>작성</Btns>
-          </PostBottom>
-        </>
+            <Btns>작성</Btns>
+          </BottomBar>
+        </PostForm>
       ) : (
         <UnloggedIn />
       )}
-      <Navigator />
     </Wrapper>
   );
 }

@@ -92,6 +92,8 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const [userData, setUserData] = useRecoilState(UserData);
   const navigate = useNavigate();
+  const apiUrl = "http://localhost:3001";
+
   useEffect(() => {
     const baseUrl = "https://kauth.kakao.com/oauth/token";
     const config = {
@@ -126,41 +128,62 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
               },
             }
           );
-
-          //recoil 전역 변수에 유저 데이터 저장 (꼭 필요한지?)
           const {
-            id,
-            kakao_account: { email, gender },
-            properties: { profile_image, nickname },
+            kakao_account: { email },
           } = userDataFromKakao.data;
 
-          const loggedInUserDataAll: IUserDataSaveData = {
-            nickname,
-            birthday: "asd",
-            phone: "",
-            gender,
-            cities_code: 0,
-            address: "",
-            profile_image,
-          };
-          const loggedInUserData: IUserData = {
-            id,
-            email,
-            nickname,
-            profile_image,
-          };
-          setUserData(nickname);
-          //Session Storage에 userdata 저장
-          sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
-
-          const data = {
-            email: loggedInUserData.email,
-            password: "00000000",
-          };
-          setIsLoggedIn(true);
-
-          window.location.href = "/myprofile";
+          axios
+            .get(`${apiUrl}/checkEmail/${email}`)
+            .then((response) => {
+              const { id, profile_image, username } = response.data.data;
+              setUserData({
+                id,
+                username,
+                userEmail: email,
+                profileImg: profile_image,
+              });
+              setIsLoggedIn(true);
+              navigate("/home");
+            })
+            .catch((error) => {
+              console.error(error);
+              navigate("/login");
+            });
         }
+        // //recoil 전역 변수에 유저 데이터 저장 (꼭 필요한지?)
+        // const {
+        //   id,
+        //   kakao_account: { email, gender },
+        //   properties: { profile_image, nickname },
+        // } = userDataFromKakao.data;
+
+        // const loggedInUserDataAll: IUserDataSaveData = {
+        //   nickname,
+        //   birthday: "asd",
+        //   phone: "",
+        //   gender,
+        //   cities_code: 0,
+        //   address: "",
+        //   profile_image,
+        // };
+        // const loggedInUserData: IUserData = {
+        //   id,
+        //   email,
+        //   nickname,
+        //   profile_image,
+        // };
+        // setUserData(nickname);
+        // //Session Storage에 userdata 저장
+        // sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
+
+        // const data = {
+        //   email: loggedInUserData.email,
+        //   password: "00000000",
+        // };
+        // setIsLoggedIn(true);
+
+        // window.location.href = "/myprofile";
+        // }
       } catch (error) {
         console.log(error);
       }
