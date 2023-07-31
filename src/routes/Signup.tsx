@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { hashPassword } from "../components/hash";
 import bcrypt from "bcryptjs";
-import { DOMAIN_URL, postInsertUserData } from "../components/api";
+import { DOMAIN_URL, USERS_API, postInsertUserData } from "../components/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -163,7 +163,7 @@ function Signup() {
 
       try {
         const response = await axios.post(
-          `${DOMAIN_URL}/checkAvailability`,
+          `${USERS_API}/checkAvailability`,
           checkData
         );
 
@@ -177,7 +177,7 @@ function Signup() {
             password: hashedPassword,
             profile_image: "",
           };
-          const response = await axios.post(`${DOMAIN_URL}/insert`, userData);
+          const response = await axios.post(`${USERS_API}/insert`, userData);
           const { id, username, email, profile_image } = response.data.data;
           setIsLoggedIn(true);
           setUserData({

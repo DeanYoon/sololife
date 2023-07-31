@@ -21,7 +21,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useRecoilValue } from "recoil";
 import { UserData as UserAtom, loginState } from "../../atoms";
 import axios from "axios";
-import { DOMAIN_URL } from "../api";
+import { DOMAIN_URL, POSTS_API } from "../api";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -132,7 +132,7 @@ function MainPost(props: MainPostProps) {
     };
 
     axios
-      .post(`${DOMAIN_URL}/likePost`, requestData)
+      .post(`${POSTS_API}/likePost`, requestData)
       .then((response) => {
         // Handle the API response
         const responseData = response.data;

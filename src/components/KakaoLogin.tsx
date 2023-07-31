@@ -6,7 +6,7 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import styled from "styled-components";
 import axios from "axios";
 import { UserData, loginState } from "../atoms";
-import { DOMAIN_URL } from "./api";
+import { DOMAIN_URL, USERS_API } from "./api";
 
 const KakaoButton = styled.button`
   width: 100%;
@@ -133,7 +133,7 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
           } = userDataFromKakao.data;
 
           axios
-            .get(`${DOMAIN_URL}/checkEmail/${email}`)
+            .get(`${USERS_API}/checkEmail/${email}`)
             .then((response) => {
               const { id, profile_image, username } = response.data.data;
               setUserData({

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IUserData, IUserDataSaveData } from "./KakaoLogin";
 import { UserData, loginState } from "../atoms";
-import { DOMAIN_URL } from "./api";
+import { DOMAIN_URL, USERS_API } from "./api";
 
 const GoogleLoginWrapper = styled.div`
   width: 100%;
@@ -64,7 +64,7 @@ export const GoogleLoginButton = () => {
         .then(async (res) => {
           const { email } = res.data;
           axios
-            .get(`${DOMAIN_URL}/checkEmail/${email}`)
+            .get(`${USERS_API}/checkEmail/${email}`)
             .then((response) => {
               const { id, profile_image, username } = response.data.data;
               setUserData({

@@ -6,6 +6,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import MainPost, { MainPostProps } from "../components/app/MainPost";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { POSTS_API } from "../components/api";
 
 const Search = styled.div`
   position: absolute;
@@ -37,7 +38,6 @@ function AppHome() {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     // Define the API URL
-    const DOMAIN_URL = "http://localhost:3001"; // Change this URL to your actual server URL
     // Define the request data (start and listn in your case)
     const requestData = {
       start: 0, // Replace with the desired start value
@@ -46,7 +46,7 @@ function AppHome() {
 
     // Make the API request
     axios
-      .post(`${DOMAIN_URL}/readPosts`, requestData)
+      .post(`${POSTS_API}/readPosts`, requestData)
       .then((response) => {
         // Handle the API response
         setPosts(response.data.data);
