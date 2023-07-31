@@ -158,7 +158,7 @@ function Signup() {
       const hashedPassword = await hashPassword(data.password);
       const checkData = {
         email: data.email,
-        username: data.name,
+              username: data.name,
       };
 
       try {

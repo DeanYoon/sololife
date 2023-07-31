@@ -6,6 +6,11 @@ import {
   LoginBtn,
   SignupBtn,
 } from "../components/app/Styled_Component";
+import axios from "axios";
+import { USERS_API } from "../components/api";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { UserData, loginState } from "../atoms";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   background-color: #fffaf4;
@@ -74,6 +79,10 @@ const Barrier = styled.div`
 `;
 
 function Login() {
+  const setIsLoggedIn = useSetRecoilState(loginState);
+  const [userData, setUserData] = useRecoilState(UserData);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -83,8 +92,35 @@ function Login() {
     mode: "onChange",
   });
 
-  const onValid = (data: any) => {
-    console.log(data);
+  const onValid = async (data: any) => {
+     try {
+    const response = await axios.post(`${USERS_API}/login`, data);
+
+    if (response.status === 200) {
+      // Login successful
+        const { id, username, email, profile_image } = response.data.data;
+           setIsLoggedIn(true);
+          setUserData({
+            id,
+            username,
+            userEmail: email,
+            profileImg: profile_image,
+          });
+          navigate("/home");
+      // Redirect the user to the home/dashboard page or perform other actions for a successful login
+    } else if (response.status === 400) {
+      // Email does not exist
+      console.log('Email does not exist');
+    } else if (response.status === 401) {
+      // Wrong password
+      console.log('Wrong password');
+    } else {
+      // Other server errors
+      console.log('Server error');
+    }
+  } catch (error) {
+    console.error('Error occurred:', error);
+  }
   };
   return (
     <Wrapper>
