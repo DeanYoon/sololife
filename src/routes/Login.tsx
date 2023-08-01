@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SocialLoginBtns from "../components/SocialLoginBtns";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import {
   BtnBox,
   LoginBtn,
@@ -79,9 +80,12 @@ const Barrier = styled.div`
 `;
 
 function Login() {
-  const setIsLoggedIn = useSetRecoilState(loginState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const [userData, setUserData] = useRecoilState(UserData);
   const navigate = useNavigate();
+  useEffect(() => {
+    isLoggedIn ? navigate("/home") : console.log("as d");
+  }, []);
 
   const {
     register,
@@ -93,34 +97,36 @@ function Login() {
   });
 
   const onValid = async (data: any) => {
-     try {
-    const response = await axios.post(`${USERS_API}/login`, data);
+    try {
+      const response = await axios.post(`${USERS_API}/login`, data);
 
-    if (response.status === 200) {
-      // Login successful
-        const { id, username, email, profile_image } = response.data.data;
-           setIsLoggedIn(true);
-          setUserData({
-            id,
-            username,
-            userEmail: email,
-            profileImg: profile_image,
-          });
-          navigate("/home");
-      // Redirect the user to the home/dashboard page or perform other actions for a successful login
-    } else if (response.status === 400) {
-      // Email does not exist
-      console.log('Email does not exist');
-    } else if (response.status === 401) {
-      // Wrong password
-      console.log('Wrong password');
-    } else {
-      // Other server errors
-      console.log('Server error');
+      if (response.status === 200) {
+        // Login successful
+
+        const { id, username, email, profile_image } = response.data.data[0];
+
+        setIsLoggedIn(true);
+        setUserData({
+          id,
+          username,
+          userEmail: email,
+          profileImg: profile_image,
+        });
+        navigate("/home");
+        // Redirect the user to the home/dashboard page or perform other actions for a successful login
+      } else if (response.status === 400) {
+        // Email does not exist
+        console.log("Email does not exist");
+      } else if (response.status === 401) {
+        // Wrong password
+        console.log("Wrong password");
+      } else {
+        // Other server errors
+        console.log("Server error");
+      }
+    } catch (error) {
+      console.error("Error occurred:", error);
     }
-  } catch (error) {
-    console.error('Error occurred:', error);
-  }
   };
   return (
     <Wrapper>

@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import Home from "./routes/Home";
 import Login from "./routes/Login";
@@ -37,7 +38,6 @@ function App() {
   const [hideApp, setHideApp] = useState(false);
   const code = new URL(window.location.href);
   const isLoggedIn = useRecoilValue(loginState);
-
   useEffect(() => {
     const handleResize = () => {
       setIsHideBackground(window.innerWidth < 1000);
@@ -54,6 +54,8 @@ function App() {
     };
   }, []);
 
+
+
   return (
     <Router>
       <Container>
@@ -65,7 +67,7 @@ function App() {
         ) : (
           <AppScreen>
             <Routes>
-              <Route path="/login" element={<Login />} />
+             <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/signup-done" element={<SignupSuccess />} />
               <Route path="/find-password" element={<FindPassword />} />

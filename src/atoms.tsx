@@ -16,7 +16,7 @@ export const loginState = atom({
 });
 
 interface UserData {
-  id: string;
+  id: number;
   username: string;
   userEmail: string;
   profileImg: string;
@@ -24,7 +24,7 @@ interface UserData {
 export const UserData = atom<UserData>({
   key: "UserData",
   default: {
-    id: "",
+    id: 0,
     username: "",
     userEmail: "",
     profileImg: "",

@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { UserData, loginState } from "../atoms";
+import { useEffect, useState } from "react";
+
 const Wrapper = styled.div`
   background-color: #fffaf4;
   max-width: 500px;
@@ -137,8 +139,12 @@ interface IFormData {
 }
 
 function Signup() {
-  const setIsLoggedIn = useSetRecoilState(loginState);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(loginState);
   const [userData, setUserData] = useRecoilState(UserData);
+  const navigate = useNavigate();
+  useEffect(() => {
+    isLoggedIn ? navigate("/home") : console.log("as d");
+  }, []);
 
   const {
     register,
@@ -152,13 +158,12 @@ function Signup() {
     return /[!@#\$%\^&\*_\-=]/.test(value);
   };
   const { email, name, password, checkPassword } = watch();
-  const navigate = useNavigate();
   const onValid = async (data: any) => {
     if (password === checkPassword) {
       const hashedPassword = await hashPassword(data.password);
       const checkData = {
         email: data.email,
-              username: data.name,
+        username: data.name,
       };
 
       try {
