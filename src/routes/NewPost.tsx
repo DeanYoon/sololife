@@ -120,7 +120,7 @@ const Btns = styled.button`
 `;
 
 interface FormData {
-  hashtags: string;
+  hashtags?: string;
   title: string;
   content: string;
   email: string;

@@ -22,6 +22,7 @@ import { useRecoilValue } from "recoil";
 import { UserData as UserAtom, loginState } from "../../atoms";
 import axios from "axios";
 import { DOMAIN_URL, POSTS_API } from "../api";
+import { Global } from "@emotion/react";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -114,6 +115,7 @@ export interface MainPostProps {
   title: string;
   content: string;
   upVote: string;
+  bookmark: string;
 }
 
 function MainPost(props: MainPostProps) {
@@ -160,6 +162,21 @@ function MainPost(props: MainPostProps) {
 
   const handleMarkClick = () => {
     setMarked(!marked);
+
+    const requestData = {
+      postId: props.id,
+      userId: GlobalUserData.id,
+    };
+
+    axios
+      .post(`${POSTS_API}/bookmarkPost`, requestData)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error liking post:", error);
+      });
   };
 
   const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
@@ -170,9 +187,12 @@ function MainPost(props: MainPostProps) {
 
   useEffect(() => {
     const emailArray = props.upVote.split(",");
-
+    const bookMarkArray = props.bookmark.split(",");
     if (emailArray.includes(GlobalUserData.id.toString())) {
       setLiked(true);
+    }
+    if (bookMarkArray.includes(GlobalUserData.id.toString())) {
+      setMarked(true);
     }
     setUpVoteCount(emailArray.length - 1);
   }, []);
@@ -181,7 +201,6 @@ function MainPost(props: MainPostProps) {
     <>
       <Wrapper key={props.id}>
         <PostOwner>
-          {/* <img src={`${props.profile_image}`} /> */}
           <img src={`${props.profile_image}`} alt="Image" />
 
           <OwnerInfo>

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import PostLink from "../components/app/PostLink";
 import { useRecoilValue } from "recoil";
-import { loginState } from "../atoms";
+import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
 
 const ProfileInfoBox = styled.div`
@@ -17,11 +17,12 @@ const ProfileInfoBox = styled.div`
   justify-content: center;
 `;
 const ProfileInfoBox__Img = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 100%;
-  background-color: #feefea;
   position: relative;
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+  }
 `;
 const Setting_Icon = styled.span`
   display: flex;
@@ -146,6 +147,7 @@ const PostsListBox = styled.div`
 `;
 function MyProfile() {
   const isLoggedIn = useRecoilValue(loginState);
+  const UserInfo = useRecoilValue(UserData);
 
   return (
     <Wrapper>
@@ -154,12 +156,22 @@ function MyProfile() {
         <>
           <ProfileInfoBox>
             <ProfileInfoBox__Img>
+              {UserInfo.profileImg ? (
+                <img src={`${UserInfo.profileImg}`} alt="Image" />
+              ) : (
+                <img
+                  src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
+                  alt="Image"
+                />
+              )}
               <Setting_Icon>
                 <FontAwesomeIcon icon={faCog} />{" "}
               </Setting_Icon>
             </ProfileInfoBox__Img>
             <ProfileInfoBox__Info>
-              <ProfileInfoBox__Info__name>닉네임</ProfileInfoBox__Info__name>
+              <ProfileInfoBox__Info__name>
+                {UserInfo.username}
+              </ProfileInfoBox__Info__name>
               <ProfileInfoBox__Info__info>
                 자기소개입니다.
               </ProfileInfoBox__Info__info>

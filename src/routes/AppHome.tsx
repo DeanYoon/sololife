@@ -37,22 +37,17 @@ function AppHome() {
   // API : https://port-0-area-node-express-r8xoo2mledsvukh.sel3.cloudtype.app//users/readPost?id=30
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    // Define the API URL
-    // Define the request data (start and listn in your case)
     const requestData = {
-      start: 0, // Replace with the desired start value
-      listn: 10, // Replace with the desired listn value
+      start: 0,
+      listn: 10,
     };
 
-    // Make the API request
     axios
       .post(`${POSTS_API}/readPosts`, requestData)
       .then((response) => {
-        // Handle the API response
         setPosts(response.data.data);
       })
       .catch((error) => {
-        // Handle any errors
         console.error("Error fetching posts:", error);
       });
   }, []);
@@ -83,6 +78,7 @@ function AppHome() {
             content={post.content}
             upVote={post.upVote}
             image={post.image}
+            bookmark={post.bookmark}
           />
         ))}
       </PostWrapper>
