@@ -7,6 +7,9 @@ import PostLink from "../components/app/PostLink";
 import { useRecoilValue } from "recoil";
 import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { POSTS_API } from "../components/api";
 
 const ProfileInfoBox = styled.div`
   height: 160px;
@@ -134,8 +137,11 @@ const MyPostsTab = styled.div`
   padding: 20px;
   font-size: 20px;
   font-weight: 1000;
+  cursor: pointer;
 `;
-const MarkedPostsTab = styled(MyPostsTab)`
+const MarkedPostsTab = styled(MyPostsTab)``;
+
+const ActiveTab = styled(MyPostsTab)`
   border-bottom: 3px solid #ff5f2d;
   color: #ff5f2d;
 `;
@@ -145,10 +151,49 @@ const PostsListBox = styled.div`
   height: 40vh;
   padding-bottom: 100px;
 `;
+export interface SubPostProps {
+  id: number;
+  image?: string;
+  date: string;
+  title: string;
+  username: string;
+}
+
 function MyProfile() {
   const isLoggedIn = useRecoilValue(loginState);
   const UserInfo = useRecoilValue(UserData);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
+  const [myPosts, setMyPosts] = useState([]);
+  const [isBookmarked, setIsBookmarked] = useState(true);
+  const [isMyPosts, setIsMyPosts] = useState(false);
 
+  const handleMyPostsTabClick = () => {
+    setIsBookmarked(false);
+    setIsMyPosts(true);
+  };
+  const handleMarkedPostsTablClick = () => {
+    setIsBookmarked(true);
+    setIsMyPosts(false);
+  };
+  useEffect(() => {
+    axios
+      .get(`${POSTS_API}/bookmarkedPosts/${UserInfo.id}`)
+      .then((response) => {
+        setBookmarkedPosts(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    axios(`${POSTS_API}/myPosts/${UserInfo.userEmail}`)
+      .then((response) => {
+        console.log(UserInfo.userEmail);
+        console.log(response.data);
+        setMyPosts(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   return (
     <Wrapper>
       <Header>마이페이지</Header>
@@ -201,11 +246,45 @@ function MyProfile() {
           </Profile__detail>
           <PostsBox>
             <PostsTab>
-              <MyPostsTab>내가 쓴 글</MyPostsTab>
-              <MarkedPostsTab>책갈피</MarkedPostsTab>
+              {isMyPosts ? (
+                <ActiveTab onClick={handleMyPostsTabClick}>
+                  내가 쓴 글
+                </ActiveTab>
+              ) : (
+                <MyPostsTab onClick={handleMyPostsTabClick}>
+                  내가 쓴 글
+                </MyPostsTab>
+              )}
+              {isBookmarked ? (
+                <ActiveTab onClick={handleMarkedPostsTablClick}>
+                  책갈피
+                </ActiveTab>
+              ) : (
+                <MarkedPostsTab onClick={handleMarkedPostsTablClick}>
+                  책갈피
+                </MarkedPostsTab>
+              )}
             </PostsTab>
             <PostsListBox>
-              <PostLink />
+              {isBookmarked
+                ? bookmarkedPosts.map((post: SubPostProps) => (
+                    <PostLink
+                      image={post.image}
+                      id={post.id}
+                      date={post.date}
+                      title={post.title}
+                      username={post.username}
+                    />
+                  ))
+                : myPosts.map((post: SubPostProps) => (
+                    <PostLink
+                      image={post.image}
+                      id={post.id}
+                      date={post.date}
+                      title={post.title}
+                      username={post.username}
+                    />
+                  ))}
             </PostsListBox>
           </PostsBox>
         </>
