@@ -9,10 +9,12 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { loginState } from "../atoms";
+import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
 import Navigator from "../components/app/Navigator";
 import { SubmitHandler, useForm } from "react-hook-form";
+import axios from "axios";
+import { POSTS_API } from "../components/api";
 
 const PostForm = styled.form`
   width: 100%;
@@ -120,22 +122,42 @@ const Btns = styled.button`
 `;
 
 interface FormData {
-  hashtags?: string;
+  tags_code?: string;
   title: string;
   content: string;
+  username: string;
   email: string;
   images?: FileList;
 }
+
 function NewPost() {
   const navigate = useNavigate();
-  const [hashTag, sethashTag] = useState<string>("");
+  const [tags_code, setTags_code] = useState<string>("");
   const isLoggedIn = useRecoilValue(loginState);
+  const UserInfo = useRecoilValue(UserData);
   const { register, handleSubmit, watch } = useForm({ mode: "onSubmit" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [image, setImage] = useState<FileList | null>(null);
   const onSubmit = (data: any) => {
-    // Handle form submission here
-    console.log({ ...data, hashTag, image });
+    try {
+      const postData: FormData = {
+        ...data,
+        tags_code: tags_code,
+        image: image ? image : "",
+        email: UserInfo.userEmail,
+        username: UserInfo.username,
+      };
+      axios
+        .post(`${POSTS_API}/insert`, postData)
+        .then((response) => {
+          navigate("/home");
+        })
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
+        });
+    } catch (error) {
+      console.error("Error submitting the form:", error);
+    }
   };
 
   const handleMoodIconClick = () => {
@@ -171,7 +193,7 @@ function NewPost() {
               <CategorySelection>
                 <select
                   name="category"
-                  onChange={(e) => sethashTag(e.target.value)}
+                  onChange={(e) => setTags_code(e.target.value)}
                 >
                   <option value="">게시판 선택</option>
                   <option value="1">집렌트</option>
