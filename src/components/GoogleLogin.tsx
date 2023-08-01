@@ -80,36 +80,6 @@ export const GoogleLoginButton = () => {
               console.log(error);
               navigate("/login");
             });
-
-          // const loggedInUserData: IUserData = {
-          //   id,
-          //   email,
-          //   nickname: name,
-          //   profile_image: picture,
-          // };
-          // console.log(loggedInUserData);
-          // const loggedInUserDataAll: IUserDataSaveData = {
-          //   nickname: name,
-          //   birthday: "asd",
-          //   phone: "",
-          //   gender: "male",
-          //   cities_code: 0,
-          //   address: "",
-          //   profile_image: picture,
-          // };
-
-          // sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
-          // setIsLoggedIn(true);
-          // setUserData(name);
-          // const data = {
-          //   email,
-          //   password: "00000000",
-          //   profile_img: picture,
-          // };
-
-          // console.log(data);
-
-          // navigate("/myprofile");
         })
         .catch((err) => console.log(err));
     }
