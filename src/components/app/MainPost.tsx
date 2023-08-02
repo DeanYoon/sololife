@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useRecoilValue } from "recoil";
@@ -106,6 +107,7 @@ const PostComment = styled.div`
 const TopComment = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   img {
     width: 20px;
     height: 20px;
@@ -125,6 +127,7 @@ const CommentUsername = styled.div`
   font-weight: 1000;
 `;
 const InputWrapper = styled.form`
+  margin-top: 10px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -141,6 +144,21 @@ const InputWrapper = styled.form`
     color: white;
     font-weight: 500;
     border-radius: 20px;
+  }
+`;
+
+const MoreIconWrapper = styled.div`
+  cursor: pointer;
+  position: relative;
+`;
+const MoreBtnWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: -40px;
+  right: -30px;
+  button {
+    width: 40px;
   }
 `;
 
@@ -168,8 +186,11 @@ interface IComments {
 function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
+  const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
   const [recentComment, setRecentComment] = useState<IComments>();
+  const moreIconRef = useRef<HTMLDivElement | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -234,6 +255,11 @@ function MainPost(props: MainPostProps) {
       });
   };
 
+  const handleMoreBtnClick = () => {
+    setIsMoreBtnClicked(!isMoreBtnClicked);
+    console.log(isMoreBtnClicked);
+  };
+
   const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -285,6 +311,17 @@ function MainPost(props: MainPostProps) {
       setMarked(true);
     }
     setUpVoteCount(emailArray.length - 1);
+    const handleClickOutside = (event: any) => {
+      if (moreIconRef.current && !moreIconRef.current.contains(event.target)) {
+        setIsMoreBtnClicked(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
 
   return (
@@ -292,7 +329,14 @@ function MainPost(props: MainPostProps) {
       <Wrapper key={props.id}>
         <PostDetail>
           <PostOwner>
-            <img src={`${props.profile_image}`} alt="Image" />
+            {props.profile_image ? (
+              <img src={`${props.profile_image}`} alt="Image" />
+            ) : (
+              <img
+                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
+                alt="Image"
+              />
+            )}
 
             <OwnerInfo>
               <h1>{props.username}</h1>
@@ -331,11 +375,26 @@ function MainPost(props: MainPostProps) {
             {recentComment && (
               <>
                 <CommentWrapper>
-                  <img src={`${recentComment.profile_image}`} alt="Image" />
+                  {recentComment.profile_image ? (
+                    <img src={`${recentComment.profile_image}`} alt="Image" />
+                  ) : (
+                    <img
+                      src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
+                      alt="Image"
+                    />
+                  )}
                   <CommentUsername>{recentComment.username}</CommentUsername>
                   <span>{recentComment.text}</span>
                 </CommentWrapper>
-                <button></button>
+                <MoreIconWrapper onClick={handleMoreBtnClick}>
+                  <MoreHorizIcon />
+                  {isMoreBtnClicked && (
+                    <MoreBtnWrapper>
+                      <button>수정</button>
+                      <button>삭제</button>
+                    </MoreBtnWrapper>
+                  )}
+                </MoreIconWrapper>
               </>
             )}
           </TopComment>
