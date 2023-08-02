@@ -33,17 +33,15 @@ const AppScreen = styled.div`
 `;
 
 function App() {
+  const [hideApp, setHideApp] = useState(false);
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
-  const [hideApp, setHideApp] = useState(false);
-  const code = new URL(window.location.href);
-  const isLoggedIn = useRecoilValue(loginState);
   useEffect(() => {
     const handleResize = () => {
-      setIsHideBackground(window.innerWidth < 1000);
-      if (code.pathname == "/") {
+      if (window.innerWidth < 1000) {
         setIsHideBackground(true);
-        setHideApp(true);
+      } else {
+        setIsHideBackground(false);
       }
     };
     window.addEventListener("resize", handleResize);
@@ -54,12 +52,10 @@ function App() {
     };
   }, []);
 
-
-
   return (
     <Router>
       <Container>
-        {isHideBackground ? null : <Background />}
+        {window.innerWidth >= 1000 && <Background />}
         {hideApp ? (
           <Routes>
             <Route path="/" element={<Home />} />
@@ -67,7 +63,7 @@ function App() {
         ) : (
           <AppScreen>
             <Routes>
-             <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/signup-done" element={<SignupSuccess />} />
               <Route path="/find-password" element={<FindPassword />} />
