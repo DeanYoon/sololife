@@ -76,7 +76,7 @@ function AppHome() {
             date={post.date}
             title={post.title}
             content={post.content}
-            upVote={post.upVote}
+            upvote={post.upvote}
             image={post.image}
             bookmark={post.bookmark}
           />

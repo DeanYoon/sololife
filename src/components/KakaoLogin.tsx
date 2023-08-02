@@ -134,6 +134,7 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
           axios
             .get(`${USERS_API}/checkEmail/${email}`)
             .then((response) => {
+              console.log(response);
               const { id, profile_image, username } = response.data.data;
               setUserData({
                 id,
@@ -141,6 +142,7 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
                 userEmail: email,
                 profileImg: profile_image,
               });
+
               setIsLoggedIn(true);
               navigate("/home");
             })

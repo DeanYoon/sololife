@@ -1,13 +1,3 @@
-import {
-  faArrowUp,
-  faArrowUpFromBracket,
-  faHeart,
-  faRepeat,
-  faShare,
-  faBookmark,
-} from "@fortawesome/free-solid-svg-icons";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 
@@ -21,15 +11,19 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useRecoilValue } from "recoil";
 import { UserData as UserAtom, loginState } from "../../atoms";
 import axios from "axios";
-import { DOMAIN_URL, POSTS_API } from "../api";
-import { Global } from "@emotion/react";
+import { POSTS_API } from "../api";
+import { useForm } from "react-hook-form";
 
 const Wrapper = styled.div`
   width: 100%;
   border-top: 1px solid #767676;
   border-bottom: 1px solid #767676;
-  padding: 25px;
 `;
+const PostDetail = styled.div`
+  padding: 25px;
+  border-bottom: 1px solid #767676;
+`;
+
 const PostOwner = styled.div`
   display: flex;
   margin-bottom: 20px;
@@ -105,6 +99,51 @@ const LikeBtn = styled.span`
   }
 `;
 
+const PostComment = styled.div`
+  width: 100%;
+  padding: 10px 25px 25px 25px;
+`;
+const TopComment = styled.div`
+  display: flex;
+  align-items: center;
+  img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  span {
+    margin: 0 5px;
+    font-size: 15px;
+  }
+`;
+const CommentWrapper = styled.div`
+  display: flex;
+`;
+
+const CommentUsername = styled.div`
+  font-weight: 1000;
+`;
+const InputWrapper = styled.form`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  input {
+    width: 80%;
+    border: none;
+    padding: 5px;
+    margin-top: 10px;
+  }
+  button {
+    border: none;
+    width: 20%;
+    background-color: #ff5f2d;
+    color: white;
+    font-weight: 500;
+    border-radius: 20px;
+  }
+`;
+
 // Define the type for the props
 export interface MainPostProps {
   id: number;
@@ -114,15 +153,31 @@ export interface MainPostProps {
   date: string;
   title: string;
   content: string;
-  upVote: string;
+  upvote: string;
   bookmark: string;
+}
+interface IComments {
+  text: string;
+  upvote?: string;
+  createdTime: string;
+  username: string;
+  profile_image: string;
+  userId: number;
 }
 
 function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
-
+  const [recentComment, setRecentComment] = useState<IComments>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+  });
   const GlobalUserData = useRecoilValue(UserAtom);
   const handleLikeClick = () => {
     setLiked(!liked);
@@ -185,8 +240,43 @@ function MainPost(props: MainPostProps) {
     day: "2-digit",
   });
 
+  const onValid = async (data: any) => {
+    const requestData = {
+      postId: props.id,
+      userId: GlobalUserData.id,
+      comment: data.comment,
+    };
+    axios
+      .post(`${POSTS_API}/comment/insert`, requestData)
+      .then((response) => {
+        console.log(response);
+        setRecentComment({
+          text: data.comment,
+          createdTime: new Date().toISOString(),
+          username: GlobalUserData.username, // Assuming you have access to the username
+          profile_image: GlobalUserData.profileImg, // Assuming you have access to the profile image
+          userId: GlobalUserData.id,
+        });
+
+        reset();
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error("Error liking post:", error);
+      });
+  };
+
   useEffect(() => {
-    const emailArray = props.upVote.split(",");
+    axios
+      .get(`${POSTS_API}/readComments/${props.id}`)
+      .then((response) => {
+        console.log(response.data.data[0]);
+        response.data.data[0] && setRecentComment(response.data.data[0]);
+      })
+      .catch((error) => {
+        console.error("Error", error);
+      });
+    const emailArray = props.upvote.split(",");
     const bookMarkArray = props.bookmark.split(",");
     if (emailArray.includes(GlobalUserData.id.toString())) {
       setLiked(true);
@@ -200,40 +290,63 @@ function MainPost(props: MainPostProps) {
   return (
     <>
       <Wrapper key={props.id}>
-        <PostOwner>
-          <img src={`${props.profile_image}`} alt="Image" />
+        <PostDetail>
+          <PostOwner>
+            <img src={`${props.profile_image}`} alt="Image" />
 
-          <OwnerInfo>
-            <h1>{props.username}</h1>
-            <div>{formattedDate}</div>
-          </OwnerInfo>
-        </PostOwner>
-        <PostContent>
-          <h1>{props.title}</h1>
-          {props.image && <img src={`${props.image}`} />}
-          <p>{props.content}</p>
-        </PostContent>
-        <Reaction>
-          <ReactionButton onClick={handleLikeClick}>
-            {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            <LikeBtn>
-              <span>좋아요</span>
-              <span>{upVoteCount}</span>
-            </LikeBtn>
-          </ReactionButton>
-          <div>
-            <AutorenewIcon />
-            <span>리포스트</span>
-          </div>
-          <ReactionButton onClick={handleMarkClick}>
-            {marked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-            <span>북마크</span>
-          </ReactionButton>
-          <div>
-            <ShareIcon />
-            <span>공유하기</span>
-          </div>
-        </Reaction>
+            <OwnerInfo>
+              <h1>{props.username}</h1>
+              <div>{formattedDate}</div>
+            </OwnerInfo>
+          </PostOwner>
+          <PostContent>
+            <h1>{props.title}</h1>
+            {props.image && <img src={`${props.image}`} />}
+            <p>{props.content}</p>
+          </PostContent>
+          <Reaction>
+            <ReactionButton onClick={handleLikeClick}>
+              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              <LikeBtn>
+                <span>좋아요</span>
+                <span>{upVoteCount}</span>
+              </LikeBtn>
+            </ReactionButton>
+            <div>
+              <AutorenewIcon />
+              <span>리포스트</span>
+            </div>
+            <ReactionButton onClick={handleMarkClick}>
+              {marked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+              <span>북마크</span>
+            </ReactionButton>
+            <div>
+              <ShareIcon />
+              <span>공유하기</span>
+            </div>
+          </Reaction>
+        </PostDetail>
+        <PostComment>
+          <TopComment>
+            {recentComment && (
+              <>
+                <CommentWrapper>
+                  <img src={`${recentComment.profile_image}`} alt="Image" />
+                  <CommentUsername>{recentComment.username}</CommentUsername>
+                  <span>{recentComment.text}</span>
+                </CommentWrapper>
+                <button></button>
+              </>
+            )}
+          </TopComment>
+          <InputWrapper onSubmit={handleSubmit(onValid)}>
+            <input
+              {...register("comment", { required: true })}
+              placeholder="댓글을 달아보세요!"
+            />
+            <button>Reply</button>
+          </InputWrapper>
+        </PostComment>
       </Wrapper>
     </>
   );

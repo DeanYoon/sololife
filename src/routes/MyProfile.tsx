@@ -138,11 +138,12 @@ const MyPostsTab = styled.div`
   font-size: 20px;
   font-weight: 1000;
   cursor: pointer;
+  border-bottom: 3px solid transparent;
 `;
 const MarkedPostsTab = styled(MyPostsTab)``;
 
 const ActiveTab = styled(MyPostsTab)`
-  border-bottom: 3px solid #ff5f2d;
+  border-bottom-color: #ff5f2d;
   color: #ff5f2d;
 `;
 const PostsListBox = styled.div`
