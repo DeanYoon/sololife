@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import axios from "axios";
+import { POSTS_API } from "../api";
+import { useForm } from "react-hook-form";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -7,13 +11,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-
 import AutorenewIcon from "@mui/icons-material/Autorenew";
-import { useRecoilValue } from "recoil";
-import { UserData as UserAtom, loginState } from "../../atoms";
-import axios from "axios";
-import { POSTS_API } from "../api";
-import { useForm } from "react-hook-form";
+
+import { UserData as UserAtom, UserData } from "../../atoms";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -175,6 +175,7 @@ export interface MainPostProps {
   bookmark: string;
 }
 interface IComments {
+  commentId: number;
   text: string;
   upvote?: string;
   createdTime: string;
@@ -188,9 +189,10 @@ function MainPost(props: MainPostProps) {
   const [marked, setMarked] = useState(false);
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
-  const [recentComment, setRecentComment] = useState<IComments>();
+  const [comments, setComments] = useState<IComments[]>([]);
   const moreIconRef = useRef<HTMLDivElement | null>(null);
-
+  const User = useRecoilValue(UserData);
+  const [] = useState();
   const {
     register,
     handleSubmit,
@@ -214,7 +216,6 @@ function MainPost(props: MainPostProps) {
       .then((response) => {
         // Handle the API response
         const responseData = response.data;
-        console.log(response.data);
         if (responseData.message === "OK") {
           // Check if the post was already liked
           if (liked) {
@@ -257,7 +258,21 @@ function MainPost(props: MainPostProps) {
 
   const handleMoreBtnClick = () => {
     setIsMoreBtnClicked(!isMoreBtnClicked);
-    console.log(isMoreBtnClicked);
+  };
+  const handleEditBtn = (commentId: number) => {};
+  const handleDeleteBtn = async (commentId: number) => {
+    try {
+      const response = await axios.delete(
+        `${POSTS_API}/comment/delete/${commentId}`
+      );
+      if (response.data.message === "Comment deleted successfully!") {
+        setComments(comments.slice(1)); // 댓글 삭제 후 다음 최신 댓글로 업데이트
+      } else {
+        console.log("Error deleting comment");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
   };
 
   const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
@@ -275,14 +290,15 @@ function MainPost(props: MainPostProps) {
     axios
       .post(`${POSTS_API}/comment/insert`, requestData)
       .then((response) => {
-        console.log(response);
-        setRecentComment({
+        const newComment = {
+          commentId: response.data.commentId,
           text: data.comment,
           createdTime: new Date().toISOString(),
           username: GlobalUserData.username, // Assuming you have access to the username
           profile_image: GlobalUserData.profileImg, // Assuming you have access to the profile image
           userId: GlobalUserData.id,
-        });
+        };
+        setComments((prevComments) => [newComment, ...prevComments]);
 
         reset();
       })
@@ -296,8 +312,8 @@ function MainPost(props: MainPostProps) {
     axios
       .get(`${POSTS_API}/readComments/${props.id}`)
       .then((response) => {
-        console.log(response.data.data[0]);
-        response.data.data[0] && setRecentComment(response.data.data[0]);
+        console.log(response.data.data);
+        response.data.data && setComments(response.data.data);
       })
       .catch((error) => {
         console.error("Error", error);
@@ -371,33 +387,43 @@ function MainPost(props: MainPostProps) {
           </Reaction>
         </PostDetail>
         <PostComment>
-          <TopComment>
-            {recentComment && (
-              <>
-                <CommentWrapper>
-                  {recentComment.profile_image ? (
-                    <img src={`${recentComment.profile_image}`} alt="Image" />
-                  ) : (
-                    <img
-                      src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
-                      alt="Image"
-                    />
-                  )}
-                  <CommentUsername>{recentComment.username}</CommentUsername>
-                  <span>{recentComment.text}</span>
-                </CommentWrapper>
-                <MoreIconWrapper onClick={handleMoreBtnClick}>
-                  <MoreHorizIcon />
-                  {isMoreBtnClicked && (
-                    <MoreBtnWrapper>
-                      <button>수정</button>
-                      <button>삭제</button>
-                    </MoreBtnWrapper>
-                  )}
-                </MoreIconWrapper>
-              </>
-            )}
-          </TopComment>
+          {comments && (
+            <TopComment key={comments[0]?.commentId}>
+              {comments[0] && (
+                <>
+                  <CommentWrapper>
+                    {comments[0].profile_image ? (
+                      <img src={`${comments[0].profile_image}`} alt="Image" />
+                    ) : (
+                      <img
+                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
+                        alt="Image"
+                      />
+                    )}
+                    <CommentUsername>{comments[0].username}</CommentUsername>
+                    <span>{comments[0].text}</span>
+                  </CommentWrapper>
+                  <MoreIconWrapper
+                    ref={moreIconRef}
+                    onClick={handleMoreBtnClick}
+                  >
+                    <MoreHorizIcon />
+                    {isMoreBtnClicked && User.id === comments[0].userId && (
+                      <MoreBtnWrapper>
+                        <button>수정</button>
+                        <button
+                          onClick={() => handleDeleteBtn(comments[0].commentId)}
+                        >
+                          삭제
+                        </button>
+                      </MoreBtnWrapper>
+                    )}
+                  </MoreIconWrapper>
+                </>
+              )}
+            </TopComment>
+          )}
+
           <InputWrapper onSubmit={handleSubmit(onValid)}>
             <input
               {...register("comment", { required: true })}
