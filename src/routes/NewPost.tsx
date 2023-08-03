@@ -137,13 +137,13 @@ function NewPost() {
   const UserInfo = useRecoilValue(UserData);
   const { register, handleSubmit, watch } = useForm({ mode: "onSubmit" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [image, setImage] = useState<FileList | null>(null);
+  const [imageData, setImageData] = useState<string | null>(null);
   const onSubmit = (data: any) => {
     try {
       const postData: FormData = {
         ...data,
         tags_code: tags_code,
-        image: image ? image : "",
+        image: imageData ? imageData : "",
         email: UserInfo.userEmail,
         username: UserInfo.username,
       };
@@ -172,10 +172,43 @@ function NewPost() {
   const handleCloseIconClick = () => {
     navigate("/home");
   };
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
 
-    setImage(files);
+    if (file) {
+      const reader = new FileReader();
+      //returns Base64-encoded url
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        //Resize process
+
+        //loads image into img
+        const img = new Image();
+        img.src = reader.result as string;
+        //size setting
+        img.onload = () => {
+          //create canvas element and set max width
+
+          // create a new canvas element
+          const canvas = document.createElement("canvas");
+          // set the maximum width of the image to be 800 pixels
+          const MAX_WIDTH = 800;
+          // calculate the scale size based on the image width and maximum width
+          const scaleSize = MAX_WIDTH / img.width;
+          // set the width and height of the canvas based on the maximum width and scaled height
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+          // get the 2D rendering context of the canvas
+          const ctx = canvas.getContext("2d");
+          // draw the image onto the canvas with the scaled dimensions
+          ctx && ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          // convert the canvas to a data URL with JPEG format and 80% quality
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+          // set the image data as the value of the "image" input field
+          setImageData(dataUrl);
+        };
+      };
+    }
   };
 
   return (
@@ -223,7 +256,7 @@ function NewPost() {
                 accept="image/*"
                 {...register("image")}
                 ref={(e) => (fileInputRef.current = e)}
-                onChange={handleFileChange}
+                onChange={handleFileUpload}
               />
               <CalendarIcon fontSize={"large"} />
               <LocationIcon fontSize={"large"} />
