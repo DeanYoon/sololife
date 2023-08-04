@@ -7,10 +7,13 @@ import PostLink from "../components/app/PostLink";
 import { useRecoilValue } from "recoil";
 import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { POSTS_API } from "../components/api";
 
+const HiddenFileUploader = styled.input`
+  display: none;
+`;
 const ProfileInfoBox = styled.div`
   height: 160px;
   width: 100%;
@@ -163,6 +166,8 @@ export interface SubPostProps {
 function MyProfile() {
   const isLoggedIn = useRecoilValue(loginState);
   const UserInfo = useRecoilValue(UserData);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageData, setImageData] = useState<string | null>(null);
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [myPosts, setMyPosts] = useState([]);
   const [isBookmarked, setIsBookmarked] = useState(true);
@@ -175,6 +180,11 @@ function MyProfile() {
   const handleMarkedPostsTablClick = () => {
     setIsBookmarked(true);
     setIsMyPosts(false);
+  };
+  const handleSettingIcon = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Trigger the click event on the file input
+    }
   };
   useEffect(() => {
     axios
@@ -210,8 +220,14 @@ function MyProfile() {
                   alt="Image"
                 />
               )}
-              <Setting_Icon>
+              <Setting_Icon onClick={handleSettingIcon}>
                 <FontAwesomeIcon icon={faCog} />{" "}
+                <HiddenFileUploader
+                  type="file"
+                  accept="image/*"
+                  ref={(e) => (fileInputRef.current = e)}
+                  onChange={handleSettingIcon}
+                />
               </Setting_Icon>
             </ProfileInfoBox__Img>
             <ProfileInfoBox__Info>
