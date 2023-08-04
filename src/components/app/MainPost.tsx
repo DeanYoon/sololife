@@ -291,7 +291,7 @@ function MainPost(props: MainPostProps) {
       .post(`${POSTS_API}/comment/insert`, requestData)
       .then((response) => {
         const newComment = {
-          commentId: response.data.commentId,
+          commentId: response.data.data.newCommentId,
           text: data.comment,
           createdTime: new Date().toISOString(),
           username: GlobalUserData.username, // Assuming you have access to the username
@@ -312,7 +312,6 @@ function MainPost(props: MainPostProps) {
     axios
       .get(`${POSTS_API}/readComments/${props.id}`)
       .then((response) => {
-        console.log(response.data.data);
         response.data.data && setComments(response.data.data);
       })
       .catch((error) => {

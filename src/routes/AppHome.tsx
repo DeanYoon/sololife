@@ -70,6 +70,7 @@ function AppHome() {
       <PostWrapper>
         {posts.map((post: MainPostProps) => (
           <MainPost
+            key={post.id}
             id={post.id}
             profile_image={post.profile_image}
             username={post.username}
