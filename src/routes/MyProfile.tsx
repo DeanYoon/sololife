@@ -4,12 +4,14 @@ import { Header, Wrapper } from "../components/app/Styled_Component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import PostLink from "../components/app/PostLink";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { POSTS_API } from "../components/api";
+import { POSTS_API, USERS_API } from "../components/api";
+import { returnEncodedImage } from "../components/functions/post";
+import { userInfo } from "os";
 
 const HiddenFileUploader = styled.input`
   display: none;
@@ -43,6 +45,7 @@ const Setting_Icon = styled.span`
   position: absolute;
   bottom: -5px;
   left: -5px;
+  cursor: pointer;
 `;
 const ProfileInfoBox__Info = styled.div`
   padding-left: 20px;
@@ -165,7 +168,7 @@ export interface SubPostProps {
 
 function MyProfile() {
   const isLoggedIn = useRecoilValue(loginState);
-  const UserInfo = useRecoilValue(UserData);
+  const [UserInfo, setUserInfo] = useRecoilState(UserData);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
@@ -197,14 +200,39 @@ function MyProfile() {
       });
     axios(`${POSTS_API}/myPosts/${UserInfo.userEmail}`)
       .then((response) => {
-        console.log(UserInfo.userEmail);
-        console.log(response.data);
         setMyPosts(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    try {
+      const encodedImage = await returnEncodedImage(event); // Wait for the Promise to resolve
+      const postData = {
+        userId: UserInfo.id,
+        profileImageData: encodedImage,
+      };
+      axios
+        .post(`${USERS_API}/update/profileImage`, postData)
+        .then((response) => {
+          console.log(response);
+
+          setImageData(encodedImage);
+          setUserInfo({ ...UserInfo, profileImg: encodedImage });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } catch (error) {
+      console.error("Error uploading and encoding image:", error);
+      // Handle error as needed
+    }
+  };
+
   return (
     <Wrapper>
       <Header>마이페이지</Header>
@@ -226,7 +254,7 @@ function MyProfile() {
                   type="file"
                   accept="image/*"
                   ref={(e) => (fileInputRef.current = e)}
-                  onChange={handleSettingIcon}
+                  onChange={handleFileUpload}
                 />
               </Setting_Icon>
             </ProfileInfoBox__Img>
@@ -286,6 +314,7 @@ function MyProfile() {
               {isBookmarked
                 ? bookmarkedPosts.map((post: SubPostProps) => (
                     <PostLink
+                      key={post.id}
                       image={post.image}
                       id={post.id}
                       date={post.date}
@@ -295,6 +324,7 @@ function MyProfile() {
                   ))
                 : myPosts.map((post: SubPostProps) => (
                     <PostLink
+                      key={post.id}
                       image={post.image}
                       id={post.id}
                       date={post.date}

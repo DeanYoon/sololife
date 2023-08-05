@@ -7,7 +7,7 @@ import LocationIcon from "@mui/icons-material/LocationOn";
 import MoodIcon from "@mui/icons-material/Mood";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { UserData, loginState } from "../atoms";
 import UnloggedIn from "../components/app/UnloggedIn";
@@ -15,6 +15,7 @@ import Navigator from "../components/app/Navigator";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
 import { POSTS_API } from "../components/api";
+import { returnEncodedImage } from "../components/functions/post";
 
 const PostForm = styled.form`
   width: 100%;
@@ -172,42 +173,16 @@ function NewPost() {
   const handleCloseIconClick = () => {
     navigate("/home");
   };
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
 
-    if (file) {
-      const reader = new FileReader();
-      //returns Base64-encoded url
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        //Resize process
-
-        //loads image into img
-        const img = new Image();
-        img.src = reader.result as string;
-        //size setting
-        img.onload = () => {
-          //create canvas element and set max width
-
-          // create a new canvas element
-          const canvas = document.createElement("canvas");
-          // set the maximum width of the image to be 800 pixels
-          const MAX_WIDTH = 800;
-          // calculate the scale size based on the image width and maximum width
-          const scaleSize = MAX_WIDTH / img.width;
-          // set the width and height of the canvas based on the maximum width and scaled height
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scaleSize;
-          // get the 2D rendering context of the canvas
-          const ctx = canvas.getContext("2d");
-          // draw the image onto the canvas with the scaled dimensions
-          ctx && ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          // convert the canvas to a data URL with JPEG format and 80% quality
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
-          // set the image data as the value of the "image" input field
-          setImageData(dataUrl);
-        };
-      };
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    try {
+      const encodedImage = await returnEncodedImage(event); // Wait for the Promise to resolve
+      setImageData(encodedImage);
+    } catch (error) {
+      console.error("Error uploading and encoding image:", error);
+      // Handle error as needed
     }
   };
 
