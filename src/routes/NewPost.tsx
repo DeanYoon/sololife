@@ -52,6 +52,7 @@ const CategorySelection = styled.div`
     border: none;
     font-weight: 300;
     padding-right: 10px;
+    max-width: 300px;
   }
 `;
 const Title = styled.input`
@@ -131,11 +132,17 @@ interface FormData {
   images?: FileList;
 }
 
+interface ITags {
+  id: Number;
+  tag: string;
+}
+
 function NewPost() {
   const navigate = useNavigate();
   const [tags_code, setTags_code] = useState<string>("");
   const isLoggedIn = useRecoilValue(loginState);
   const UserInfo = useRecoilValue(UserData);
+  const [tags, setTags] = useState([]);
   const { register, handleSubmit, watch } = useForm({ mode: "onSubmit" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
@@ -186,6 +193,15 @@ function NewPost() {
     }
   };
 
+  useEffect(() => {
+    axios
+      .get(`${POSTS_API}/newPosts/getTags`)
+      .then((response) => {
+        setTags(response.data);
+      })
+      .catch();
+  }, []);
+
   return (
     <Wrapper>
       <Header>글쓰기</Header>
@@ -204,9 +220,12 @@ function NewPost() {
                   onChange={(e) => setTags_code(e.target.value)}
                 >
                   <option value="">게시판 선택</option>
-                  <option value="1">집렌트</option>
-                  <option value="2">중고물품</option>
-                  <option value="3">맛집</option>
+                  {tags &&
+                    tags.map((tags: ITags) => (
+                      <option key={`${tags.id}`} value={`${tags.id}`}>
+                        {tags.tag}
+                      </option>
+                    ))}
                 </select>
               </CategorySelection>
               <Title
