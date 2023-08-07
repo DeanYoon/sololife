@@ -132,8 +132,8 @@ interface FormData {
   images?: FileList;
 }
 
-interface ITags {
-  id: Number;
+export interface ITags {
+  id: number;
   tag: string;
 }
 

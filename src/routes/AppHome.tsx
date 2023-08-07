@@ -7,6 +7,7 @@ import MainPost, { MainPostProps } from "../components/app/MainPost";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { POSTS_API } from "../components/api";
+import { ITags } from "./NewPost";
 
 const Search = styled.div`
   position: absolute;
@@ -20,9 +21,16 @@ const BtnWrapper = styled.div`
   min-height: 40px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   border-bottom: 1px solid #767676;
   a {
+    cursor: pointer;
+  }
+  > option {
+    width: 15%;
+  }
+  option {
+    padding: 10px;
     cursor: pointer;
   }
 `;
@@ -31,17 +39,36 @@ const PostWrapper = styled.div`
   width: 100%;
   overflow: scroll;
   padding-bottom: 100px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
+const TagsWrapper = styled.div`
+  display: flex;
+  width: 85%;
+  overflow-x: scroll;
+  /* Style the scrollbar thumb */
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 function AppHome() {
   // API : https://port-0-area-node-express-r8xoo2mledsvukh.sel3.cloudtype.app//users/readPost?id=30
   const [posts, setPosts] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [clickedTag, setClickedTag] = useState(0);
+  const handleClickTag = (key: number) => {
+    setClickedTag(key);
+    console.log(key);
+  };
+
   useEffect(() => {
     const requestData = {
       start: 0,
       listn: 10,
+      tag: clickedTag,
     };
-
     axios
       .post(`${POSTS_API}/readPosts`, requestData)
       .then((response) => {
@@ -50,7 +77,16 @@ function AppHome() {
       .catch((error) => {
         console.error("Error fetching posts:", error);
       });
-  }, []);
+
+    axios
+      .get(`${POSTS_API}/newPosts/getTags`)
+      .then((response) => {
+        setTags(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [clickedTag]);
 
   return (
     <Wrapper>
@@ -61,11 +97,20 @@ function AppHome() {
         </Search>
       </Header>
       <BtnWrapper>
-        <a>전체보기</a>
-        <a>집렌트</a>
-        <a>중고물품</a>
-        <a>맛집</a>
-        <a>이벤트</a>
+        <option onClick={() => handleClickTag(0)} key={0}>
+          전체보기
+        </option>
+        <TagsWrapper>
+          {tags &&
+            tags.map((tags: ITags) => (
+              <option
+                onClick={() => handleClickTag(tags.id)}
+                key={`${tags.id}`}
+              >
+                {tags.tag}
+              </option>
+            ))}
+        </TagsWrapper>
       </BtnWrapper>
       <PostWrapper>
         {posts.map((post: MainPostProps) => (
