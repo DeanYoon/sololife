@@ -197,7 +197,7 @@ function MainPost(props: MainPostProps) {
   const [comments, setComments] = useState<IComments[]>([]);
   const moreIconRef = useRef<HTMLDivElement | null>(null);
   const User = useRecoilValue(UserData);
-  const [] = useState();
+  const [commentForEdit, setCommentForEdit] = useState<IComments | null>(null);
   const {
     register,
     handleSubmit,
@@ -262,8 +262,8 @@ function MainPost(props: MainPostProps) {
   const handleMoreBtnClick = () => {
     setIsMoreBtnClicked(!isMoreBtnClicked);
   };
-  const handleEditBtn = (commentId: number) => {
-    console.log(commentId);
+  const handleEditBtn = (comment: IComments) => {
+    setCommentForEdit(comment);
   };
   const handleDeleteBtn = async (commentId: number) => {
     try {
@@ -285,20 +285,14 @@ function MainPost(props: MainPostProps) {
       postId: props.id,
       userId: GlobalUserData.id,
       comment: data.comment,
+      editComment: commentForEdit?.commentId,
     };
     axios
       .post(`${COMMENTS_API}/${requestData.postId}`, requestData)
       .then((response) => {
-        const newComment = {
-          commentId: response.data.data.newCommentId,
-          text: data.comment,
-          createdTime: new Date().toISOString(),
-          username: GlobalUserData.username, // Assuming you have access to the username
-          profile_image: GlobalUserData.profileImg, // Assuming you have access to the profile image
-          userId: GlobalUserData.id,
-        };
-        setComments((prevComments) => [newComment, ...prevComments]);
-
+        //수정중인 데이터 초기화
+        setCommentForEdit(null);
+        setComments(response.data.data);
         reset();
       })
       .catch((error) => {
@@ -415,9 +409,7 @@ function MainPost(props: MainPostProps) {
                     <MoreHorizIcon />
                     {isMoreBtnClicked && User.id === comments[0].userId && (
                       <MoreBtnWrapper>
-                        <button
-                          onClick={() => handleEditBtn(comments[0].commentId)}
-                        >
+                        <button onClick={() => handleEditBtn(comments[0])}>
                           수정
                         </button>
                         <button
@@ -437,6 +429,7 @@ function MainPost(props: MainPostProps) {
             <input
               {...register("comment", { required: true })}
               placeholder="댓글을 달아보세요!"
+              defaultValue={commentForEdit?.text}
             />
             <button>Reply</button>
           </InputWrapper>
