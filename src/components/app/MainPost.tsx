@@ -10,11 +10,11 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 
 import { UserData as UserAtom, UserData } from "../../atoms";
 import { formatTimeAgo } from "../functions/post";
+import Comment from "./Comment";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -105,32 +105,7 @@ const PostComment = styled.div`
   width: 100%;
   padding: 10px 25px 25px 25px;
 `;
-const TopComment = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  img {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  span {
-    margin: 0 5px;
-    font-size: 15px;
-  }
-`;
-const CommentWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  span:last-child {
-    font-size: 10px;
-  }
-`;
 
-const CommentUsername = styled.div`
-  font-weight: 1000;
-`;
 const InputWrapper = styled.form`
   margin-top: 10px;
   width: 100%;
@@ -152,21 +127,6 @@ const InputWrapper = styled.form`
   }
 `;
 
-const MoreIconWrapper = styled.div`
-  cursor: pointer;
-  position: relative;
-`;
-const MoreBtnWrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: -40px;
-  right: -30px;
-  button {
-    width: 40px;
-  }
-`;
-
 // Define the type for the props
 export interface MainPostProps {
   id: number;
@@ -179,7 +139,7 @@ export interface MainPostProps {
   upvote: string;
   bookmark: string;
 }
-interface IComments {
+export interface IComments {
   commentId: number;
   text: string;
   upvote?: string;
@@ -192,12 +152,11 @@ interface IComments {
 function MainPost(props: MainPostProps) {
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
-  const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
   const [comments, setComments] = useState<IComments[]>([]);
-  const moreIconRef = useRef<HTMLDivElement | null>(null);
   const User = useRecoilValue(UserData);
   const [commentForEdit, setCommentForEdit] = useState<IComments | null>(null);
+  const [expandComments, setExpandComments] = useState(false);
   const {
     register,
     handleSubmit,
@@ -259,9 +218,6 @@ function MainPost(props: MainPostProps) {
       });
   };
 
-  const handleMoreBtnClick = () => {
-    setIsMoreBtnClicked(!isMoreBtnClicked);
-  };
   const handleEditBtn = (comment: IComments) => {
     setCommentForEdit(comment);
   };
@@ -319,17 +275,6 @@ function MainPost(props: MainPostProps) {
       setMarked(true);
     }
     setUpVoteCount(emailArray.length - 1);
-    const handleClickOutside = (event: any) => {
-      if (moreIconRef.current && !moreIconRef.current.contains(event.target)) {
-        setIsMoreBtnClicked(false);
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {
@@ -383,47 +328,15 @@ function MainPost(props: MainPostProps) {
           </Reaction>
         </PostDetail>
         <PostComment>
-          {comments && (
-            <TopComment key={comments[0]?.commentId}>
-              {comments[0] && (
-                <>
-                  <CommentWrapper>
-                    {comments[0].profile_image ? (
-                      <img src={`${comments[0].profile_image}`} alt="Image" />
-                    ) : (
-                      <img
-                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfZCGFDrC8YeednlJC3mhxPfg_s4Pg8u7-kf6dy88&s`}
-                        alt="Image"
-                      />
-                    )}
-                    <CommentUsername>{comments[0].username}</CommentUsername>
-                    <span>{comments[0].text}</span>
-                    <span>
-                      {formatTimeAgo(new Date(comments[0].createdTime))}
-                    </span>
-                  </CommentWrapper>
-                  <MoreIconWrapper
-                    ref={moreIconRef}
-                    onClick={handleMoreBtnClick}
-                  >
-                    <MoreHorizIcon />
-                    {isMoreBtnClicked && User.id === comments[0].userId && (
-                      <MoreBtnWrapper>
-                        <button onClick={() => handleEditBtn(comments[0])}>
-                          수정
-                        </button>
-                        <button
-                          onClick={() => handleDeleteBtn(comments[0].commentId)}
-                        >
-                          삭제
-                        </button>
-                      </MoreBtnWrapper>
-                    )}
-                  </MoreIconWrapper>
-                </>
-              )}
-            </TopComment>
-          )}
+          {comments.map((comment: IComments) => (
+            <Comment
+              key={comment.commentId}
+              comment={comment}
+              handleEditBtn={handleEditBtn}
+              handleDeleteBtn={handleDeleteBtn}
+              User={User}
+            />
+          ))}
 
           <InputWrapper onSubmit={handleSubmit(onValid)}>
             <input

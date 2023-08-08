@@ -15,7 +15,7 @@ export const loginState = atom({
   effects_UNSTABLE: [persistAtom],
 });
 
-interface UserData {
+export interface UserData {
   id: number;
   username: string;
   userEmail: string;
