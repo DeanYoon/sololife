@@ -53,21 +53,24 @@ const TagsWrapper = styled.div`
   }
 `;
 
+const TagOption = styled.option`
+  color: ${(props) => (props.selected ? "tomato" : "black")};
+  font-weight: ${(props) => (props.selected ? 1000 : 0)};
+`;
+
 function AppHome() {
-  // API : https://port-0-area-node-express-r8xoo2mledsvukh.sel3.cloudtype.app//users/readPost?id=30
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
-  const [clickedTag, setClickedTag] = useState(0);
+  const [selectedTag, setSelectedTag] = useState(0);
   const handleClickTag = (key: number) => {
-    setClickedTag(key);
-    console.log(key);
+    setSelectedTag(key);
   };
 
   useEffect(() => {
     const requestData = {
       start: 0,
-      listn: 10,
-      tag: clickedTag,
+      listn: 20,
+      tag: selectedTag,
     };
     axios
       .post(`${POSTS_API}/readPosts`, requestData)
@@ -86,7 +89,7 @@ function AppHome() {
       .catch((error) => {
         console.error(error);
       });
-  }, [clickedTag]);
+  }, [selectedTag]);
 
   return (
     <Wrapper>
@@ -97,18 +100,23 @@ function AppHome() {
         </Search>
       </Header>
       <BtnWrapper>
-        <option onClick={() => handleClickTag(0)} key={0}>
+        <TagOption
+          onClick={() => handleClickTag(0)}
+          key={0}
+          selected={selectedTag === 0}
+        >
           전체보기
-        </option>
+        </TagOption>
         <TagsWrapper>
           {tags &&
             tags.map((tags: ITags) => (
-              <option
+              <TagOption
                 onClick={() => handleClickTag(tags.id)}
                 key={`${tags.id}`}
+                selected={selectedTag === tags.id}
               >
                 {tags.tag}
-              </option>
+              </TagOption>
             ))}
         </TagsWrapper>
       </BtnWrapper>
