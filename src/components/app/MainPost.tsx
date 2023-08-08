@@ -14,6 +14,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 
 import { UserData as UserAtom, UserData } from "../../atoms";
+import { formatTimeAgo } from "../functions/post";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -275,11 +276,7 @@ function MainPost(props: MainPostProps) {
     }
   };
 
-  const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  const newFormattedDate = formatTimeAgo(new Date(props.date));
 
   const onValid = async (data: any) => {
     const requestData = {
@@ -355,7 +352,7 @@ function MainPost(props: MainPostProps) {
 
             <OwnerInfo>
               <h1>{props.username}</h1>
-              <div>{formattedDate}</div>
+              <div>{newFormattedDate}</div>
             </OwnerInfo>
           </PostOwner>
           <PostContent>

@@ -1,3 +1,4 @@
+//  encode Image using base64
 export const returnEncodedImage = (
   event: React.ChangeEvent<HTMLInputElement>
 ): Promise<string> => {
@@ -34,3 +35,26 @@ export const returnEncodedImage = (
     }
   });
 };
+
+// change date data into 1s , 1h, 1d , 1m (ago)
+export function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+
+  if (diff < 1000 * 60) {
+    return `${Math.floor(diff / 1000)}s ago`;
+  } else if (diff < 1000 * 60 * 60) {
+    return `${Math.floor(diff / (1000 * 60))}min ago`;
+  } else if (diff < 1000 * 60 * 60 * 24) {
+    return `${Math.floor(diff / (1000 * 60 * 60))}h ago`;
+  } else if (diff < 1000 * 60 * 60 * 24 * 30) {
+    return `${Math.floor(diff / (1000 * 60 * 60 * 24))}d ago`;
+  } else {
+    const formattedDate = new Date(date).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    return formattedDate;
+  }
+}

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { SubPostProps } from "../../routes/MyProfile";
+import { formatTimeAgo } from "../functions/post";
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,11 +30,7 @@ const Post_info_detail = styled.div`
 `;
 
 function Post(props: SubPostProps) {
-  const formattedDate = new Date(props.date).toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  const newFormattedDate = formatTimeAgo(new Date(props.date));
   return (
     <Wrapper>
       {props.image ? (
@@ -48,7 +45,7 @@ function Post(props: SubPostProps) {
         <Post_info_title>{props.title}</Post_info_title>
         <Post_info_detail>
           <div>{props.username}</div>
-          <div>{formattedDate}</div>
+          <div>{newFormattedDate}</div>
         </Post_info_detail>
       </Post_info>
     </Wrapper>
