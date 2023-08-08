@@ -37,11 +37,13 @@ function App() {
   const [isHideBackground, setIsHideBackground] =
     useRecoilState(hideBackground);
   const code = new URL(window.location.href);
-  const isLoggedIn = useRecoilValue(loginState);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsHideBackground(window.innerWidth < 1000);
+      window.innerWidth < 1000
+        ? setIsHideBackground(true)
+        : setIsHideBackground(false);
+
       if (code.pathname == "/") {
         setIsHideBackground(true);
         setHideApp(true);
@@ -58,7 +60,8 @@ function App() {
   return (
     <Router>
       <Container>
-        {isHideBackground ? null : <Background />}
+        {window.innerWidth >= 1000 && <Background />}
+
         {hideApp ? (
           <Routes>
             <Route path="/" element={<Home />} />
