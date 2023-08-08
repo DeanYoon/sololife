@@ -42,13 +42,13 @@ export function formatTimeAgo(date: Date): string {
   const diff = now.getTime() - date.getTime();
 
   if (diff < 1000 * 60) {
-    return `${Math.floor(diff / 1000)}s ago`;
+    return `${Math.floor(diff / 1000)}s`;
   } else if (diff < 1000 * 60 * 60) {
-    return `${Math.floor(diff / (1000 * 60))}min ago`;
+    return `${Math.floor(diff / (1000 * 60))}min`;
   } else if (diff < 1000 * 60 * 60 * 24) {
-    return `${Math.floor(diff / (1000 * 60 * 60))}h ago`;
+    return `${Math.floor(diff / (1000 * 60 * 60))}h`;
   } else if (diff < 1000 * 60 * 60 * 24 * 30) {
-    return `${Math.floor(diff / (1000 * 60 * 60 * 24))}d ago`;
+    return `${Math.floor(diff / (1000 * 60 * 60 * 24))}d`;
   } else {
     const formattedDate = new Date(date).toLocaleDateString("ko-KR", {
       year: "numeric",

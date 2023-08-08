@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { POSTS_API } from "../components/api";
 import { ITags } from "./NewPost";
+import queryString from "query-string";
 
 const Search = styled.div`
   position: absolute;
@@ -67,13 +68,12 @@ function AppHome() {
   };
 
   useEffect(() => {
-    const requestData = {
-      start: 0,
+    const params = {
       listn: 20,
       tag: selectedTag,
     };
     axios
-      .post(`${POSTS_API}/readPosts`, requestData)
+      .get(`${POSTS_API}?${queryString.stringify(params)}`)
       .then((response) => {
         setPosts(response.data.data);
       })
@@ -82,7 +82,7 @@ function AppHome() {
       });
 
     axios
-      .get(`${POSTS_API}/newPosts/getTags`)
+      .get(`${POSTS_API}/tags`)
       .then((response) => {
         setTags(response.data);
       })

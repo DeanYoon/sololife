@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import axios from "axios";
-import { POSTS_API } from "../api";
+import { COMMENTS_API, POSTS_API } from "../api";
 import { useForm } from "react-hook-form";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -122,6 +122,10 @@ const TopComment = styled.div`
 `;
 const CommentWrapper = styled.div`
   display: flex;
+  align-items: center;
+  span:last-child {
+    font-size: 10px;
+  }
 `;
 
 const CommentUsername = styled.div`
@@ -213,7 +217,7 @@ function MainPost(props: MainPostProps) {
     };
 
     axios
-      .post(`${POSTS_API}/likePost`, requestData)
+      .post(`${POSTS_API}/${props.id}/like`, requestData)
       .then((response) => {
         // Handle the API response
         const responseData = response.data;
@@ -247,10 +251,8 @@ function MainPost(props: MainPostProps) {
     };
 
     axios
-      .post(`${POSTS_API}/bookmarkPost`, requestData)
-      .then((response) => {
-        console.log(response);
-      })
+      .post(`${POSTS_API}/${props.id}/bookmark`, requestData)
+      .then((response) => {})
       .catch((error) => {
         // Handle any errors
         console.error("Error liking post:", error);
@@ -260,12 +262,12 @@ function MainPost(props: MainPostProps) {
   const handleMoreBtnClick = () => {
     setIsMoreBtnClicked(!isMoreBtnClicked);
   };
-  const handleEditBtn = (commentId: number) => {};
+  const handleEditBtn = (commentId: number) => {
+    console.log(commentId);
+  };
   const handleDeleteBtn = async (commentId: number) => {
     try {
-      const response = await axios.delete(
-        `${POSTS_API}/comment/delete/${commentId}`
-      );
+      const response = await axios.delete(`${COMMENTS_API}/${commentId}`);
       if (response.data.message === "Comment deleted successfully!") {
         setComments(comments.slice(1)); // 댓글 삭제 후 다음 최신 댓글로 업데이트
       } else {
@@ -285,7 +287,7 @@ function MainPost(props: MainPostProps) {
       comment: data.comment,
     };
     axios
-      .post(`${POSTS_API}/comment/insert`, requestData)
+      .post(`${COMMENTS_API}/${requestData.postId}`, requestData)
       .then((response) => {
         const newComment = {
           commentId: response.data.data.newCommentId,
@@ -307,7 +309,7 @@ function MainPost(props: MainPostProps) {
 
   useEffect(() => {
     axios
-      .get(`${POSTS_API}/readComments/${props.id}`)
+      .get(`${COMMENTS_API}/${props.id}`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
       })
@@ -335,6 +337,10 @@ function MainPost(props: MainPostProps) {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(comments);
+  }, [comments]);
 
   return (
     <>
@@ -398,6 +404,9 @@ function MainPost(props: MainPostProps) {
                     )}
                     <CommentUsername>{comments[0].username}</CommentUsername>
                     <span>{comments[0].text}</span>
+                    <span>
+                      {formatTimeAgo(new Date(comments[0].createdTime))}
+                    </span>
                   </CommentWrapper>
                   <MoreIconWrapper
                     ref={moreIconRef}
@@ -406,7 +415,11 @@ function MainPost(props: MainPostProps) {
                     <MoreHorizIcon />
                     {isMoreBtnClicked && User.id === comments[0].userId && (
                       <MoreBtnWrapper>
-                        <button>수정</button>
+                        <button
+                          onClick={() => handleEditBtn(comments[0].commentId)}
+                        >
+                          수정
+                        </button>
                         <button
                           onClick={() => handleDeleteBtn(comments[0].commentId)}
                         >

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Header, Wrapper } from "../components/app/Styled_Component";
 import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CalendarIcon from "@mui/icons-material/CalendarToday";
 import LocationIcon from "@mui/icons-material/LocationOn";
 import MoodIcon from "@mui/icons-material/Mood";
@@ -152,8 +151,7 @@ function NewPost() {
         ...data,
         tags_code: tags_code,
         image: imageData ? imageData : "",
-        email: UserInfo.userEmail,
-        username: UserInfo.username,
+        userId: UserInfo.id,
       };
       axios
         .post(`${POSTS_API}/insert`, postData)
@@ -195,7 +193,7 @@ function NewPost() {
 
   useEffect(() => {
     axios
-      .get(`${POSTS_API}/newPosts/getTags`)
+      .get(`${POSTS_API}/tags`)
       .then((response) => {
         setTags(response.data);
       })

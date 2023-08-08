@@ -191,14 +191,15 @@ function MyProfile() {
   };
   useEffect(() => {
     axios
-      .get(`${POSTS_API}/bookmarkedPosts/${UserInfo.id}`)
+      .get(`${USERS_API}/${UserInfo.id}/bookmarked-posts`)
       .then((response) => {
         setBookmarkedPosts(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
-    axios(`${POSTS_API}/myPosts/${UserInfo.userEmail}`)
+    axios
+      .get(`${USERS_API}/${UserInfo.id}/posts`)
       .then((response) => {
         setMyPosts(response.data);
       })
