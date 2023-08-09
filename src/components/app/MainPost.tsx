@@ -223,9 +223,11 @@ function MainPost(props: MainPostProps) {
   };
   const handleDeleteBtn = async (commentId: number) => {
     try {
-      const response = await axios.delete(`${COMMENTS_API}/${commentId}`);
+      const response = await axios.delete(
+        `${COMMENTS_API}/${props.id}/${commentId}`
+      );
       if (response.data.message === "Comment deleted successfully!") {
-        setComments(comments.slice(1)); // 댓글 삭제 후 다음 최신 댓글로 업데이트
+        setComments(response.data.data); // 댓글 삭제 후 다음 최신 댓글로 업데이트
       } else {
         console.log("Error deleting comment");
       }
@@ -328,19 +330,29 @@ function MainPost(props: MainPostProps) {
           </Reaction>
         </PostDetail>
         <PostComment>
-          {comments.map((comment: IComments) => (
-            <Comment
-              key={comment.commentId}
-              comment={comment}
-              handleEditBtn={handleEditBtn}
-              handleDeleteBtn={handleDeleteBtn}
-              User={User}
-            />
-          ))}
+          {expandComments
+            ? comments.map((comment: IComments) => (
+                <Comment
+                  key={comment.commentId}
+                  comment={comment}
+                  handleEditBtn={handleEditBtn}
+                  handleDeleteBtn={handleDeleteBtn}
+                  User={User}
+                />
+              ))
+            : comments[0] && (
+                <Comment
+                  key={comments[0].commentId}
+                  comment={comments[0]}
+                  handleEditBtn={handleEditBtn}
+                  handleDeleteBtn={handleDeleteBtn}
+                  User={User}
+                />
+              )}
 
           <InputWrapper onSubmit={handleSubmit(onValid)}>
             <input
-              {...register("comment", { required: true })}
+              {...register("comment", { required: true, maxLength: 100 })}
               placeholder="댓글을 달아보세요!"
               defaultValue={commentForEdit?.text}
             />
