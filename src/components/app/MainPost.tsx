@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import axios from "axios";
-import { COMMENTS_API, POSTS_API } from "../api";
+import { POSTS_API } from "../api";
 import { useForm } from "react-hook-form";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -223,9 +223,12 @@ function MainPost(props: MainPostProps) {
   };
   const handleDeleteBtn = async (commentId: number) => {
     try {
-      const response = await axios.delete(`${COMMENTS_API}/${commentId}`);
-      if (response.data.message === "Comment deleted successfully!") {
-        setComments(comments.slice(1)); // 댓글 삭제 후 다음 최신 댓글로 업데이트
+      const response = await axios.delete(
+        `${POSTS_API}/${props.id}/comments/${commentId}`
+      );
+
+      if (response.data.data) {
+        setComments(response.data.data); // 댓글 삭제 후 다음 최신 댓글로 업데이트
       } else {
         console.log("Error deleting comment");
       }
@@ -244,7 +247,7 @@ function MainPost(props: MainPostProps) {
       editComment: commentForEdit?.commentId,
     };
     axios
-      .post(`${COMMENTS_API}/${requestData.postId}`, requestData)
+      .post(`${POSTS_API}/${requestData.postId}/comments`, requestData)
       .then((response) => {
         //수정중인 데이터 초기화
         setCommentForEdit(null);
@@ -259,7 +262,7 @@ function MainPost(props: MainPostProps) {
 
   useEffect(() => {
     axios
-      .get(`${COMMENTS_API}/${props.id}`)
+      .get(`${POSTS_API}/${props.id}/comments/last`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
       })
@@ -328,15 +331,25 @@ function MainPost(props: MainPostProps) {
           </Reaction>
         </PostDetail>
         <PostComment>
-          {comments.map((comment: IComments) => (
+          {expandComments ? (
+            comments.map((comment: IComments) => (
+              <Comment
+                key={comment.commentId}
+                comment={comment}
+                handleEditBtn={handleEditBtn}
+                handleDeleteBtn={handleDeleteBtn}
+                User={User}
+              />
+            ))
+          ) : (
             <Comment
-              key={comment.commentId}
-              comment={comment}
+              key={comments[0]?.commentId}
+              comment={comments[0]}
               handleEditBtn={handleEditBtn}
               handleDeleteBtn={handleDeleteBtn}
               User={User}
             />
-          ))}
+          )}
 
           <InputWrapper onSubmit={handleSubmit(onValid)}>
             <input

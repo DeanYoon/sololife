@@ -60,30 +60,32 @@ function App() {
   return (
     <Router>
       <Container>
-        {window.innerWidth >= 1000 && <Background />}
-
         {hideApp ? (
           <Routes>
             <Route path="/" element={<Home />} />
           </Routes>
         ) : (
-          <AppScreen>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/signup-done" element={<SignupSuccess />} />
-              <Route path="/find-password" element={<FindPassword />} />
-              <Route path="/change-password" element={<ChangePassword />} />
-              <Route path="/kakao-login" element={<KakaoCheck />} />
-            </Routes>
+          <>
+            {window.innerWidth >= 1000 && <Background />}
 
-            {/* For App */}
-            <Routes>
-              <Route path="/home" element={<AppHome />} />
-              <Route path="/myprofile" element={<MyProfile />} />
-              <Route path="/new-post" element={<NewPost />} />
-            </Routes>
-          </AppScreen>
+            <AppScreen>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signup-done" element={<SignupSuccess />} />
+                <Route path="/find-password" element={<FindPassword />} />
+                <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/kakao-login" element={<KakaoCheck />} />
+              </Routes>
+
+              {/* For App */}
+              <Routes>
+                <Route path="/home" element={<AppHome />} />
+                <Route path="/myprofile" element={<MyProfile />} />
+                <Route path="/new-post" element={<NewPost />} />
+              </Routes>
+            </AppScreen>
+          </>
         )}
       </Container>
     </Router>
