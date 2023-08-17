@@ -151,40 +151,6 @@ export const FinishKakaoLogin = ({ code }: FinishKakaoLoginProps) => {
               navigate("/login");
             });
         }
-        // //recoil 전역 변수에 유저 데이터 저장 (꼭 필요한지?)
-        // const {
-        //   id,
-        //   kakao_account: { email, gender },
-        //   properties: { profile_image, nickname },
-        // } = userDataFromKakao.data;
-
-        // const loggedInUserDataAll: IUserDataSaveData = {
-        //   nickname,
-        //   birthday: "asd",
-        //   phone: "",
-        //   gender,
-        //   cities_code: 0,
-        //   address: "",
-        //   profile_image,
-        // };
-        // const loggedInUserData: IUserData = {
-        //   id,
-        //   email,
-        //   nickname,
-        //   profile_image,
-        // };
-        // setUserData(nickname);
-        // //Session Storage에 userdata 저장
-        // sessionStorage.setItem("userData", JSON.stringify(loggedInUserData));
-
-        // const data = {
-        //   email: loggedInUserData.email,
-        //   password: "00000000",
-        // };
-        // setIsLoggedIn(true);
-
-        // window.location.href = "/myprofile";
-        // }
       } catch (error) {
         console.log(error);
       }

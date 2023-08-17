@@ -11,6 +11,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { UserData as UserAtom, UserData } from "../../atoms";
 import { formatTimeAgo } from "../functions/post";
@@ -100,10 +101,15 @@ const LikeBtn = styled.span`
     width: 20px;
   }
 `;
-
 const PostComment = styled.div`
   width: 100%;
+  position: relative;
   padding: 10px 25px 25px 25px;
+`;
+const StyledArrowIcon = styled(KeyboardArrowDownIcon)`
+  position: absolute;
+  left: 0;
+  cursor: pointer;
 `;
 
 const InputWrapper = styled.form`
@@ -150,6 +156,7 @@ export interface IComments {
 }
 
 function MainPost(props: MainPostProps) {
+  const newFormattedDate = formatTimeAgo(new Date(props.date));
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
@@ -157,6 +164,7 @@ function MainPost(props: MainPostProps) {
   const User = useRecoilValue(UserData);
   const [commentForEdit, setCommentForEdit] = useState<IComments | null>(null);
   const [expandComments, setExpandComments] = useState(false);
+  const [commentsNum, setCommentsNum] = useState(0);
   const {
     register,
     handleSubmit,
@@ -236,8 +244,20 @@ function MainPost(props: MainPostProps) {
       console.error("An error occurred:", error);
     }
   };
-
-  const newFormattedDate = formatTimeAgo(new Date(props.date));
+  const handleExpandIcon = () => {
+    setExpandComments((prev) => !prev);
+    if (comments.length === 1) {
+      axios
+        .get(`${POSTS_API}/${props.id}/comments`)
+        .then((response) => {
+          response.data.data && setComments(response.data.data);
+          console.log("data recieved");
+        })
+        .catch((error) => {
+          console.error("Error", error);
+        });
+    }
+  };
 
   const onValid = async (data: any) => {
     const requestData = {
@@ -251,7 +271,7 @@ function MainPost(props: MainPostProps) {
       .then((response) => {
         //수정중인 데이터 초기화
         setCommentForEdit(null);
-        setComments(response.data.data);
+        setComments([response.data.data[0], ...comments]);
         reset();
       })
       .catch((error) => {
@@ -265,6 +285,7 @@ function MainPost(props: MainPostProps) {
       .get(`${POSTS_API}/${props.id}/comments/last`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error", error);
@@ -277,12 +298,8 @@ function MainPost(props: MainPostProps) {
     if (bookMarkArray.includes(GlobalUserData.id.toString())) {
       setMarked(true);
     }
-    setUpVoteCount(emailArray.length - 1);
+    setUpVoteCount(emailArray.length - 1); //
   }, []);
-
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
 
   return (
     <>
@@ -331,6 +348,7 @@ function MainPost(props: MainPostProps) {
           </Reaction>
         </PostDetail>
         <PostComment>
+          <StyledArrowIcon onClick={handleExpandIcon} />
           {expandComments ? (
             comments.map((comment: IComments) => (
               <Comment
