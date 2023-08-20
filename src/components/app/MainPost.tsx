@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import axios from "axios";
@@ -89,27 +89,35 @@ const ReactionButton = styled.div`
   cursor: pointer;
   color: #767676;
 `;
+const LikeBtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const LikeBtn = styled.span`
-  display: flex;
-  text-align: center;
-  justify-content: space-between;
-  width: 70px;
-  span {
-  }
-  span:last-child {
-    width: 20px;
-  }
+  margin-left: 10px;
+  width: 20px;
 `;
 const PostComment = styled.div`
   width: 100%;
   position: relative;
   padding: 10px 25px 25px 25px;
 `;
-const StyledArrowIcon = styled(KeyboardArrowDownIcon)`
+
+const StyledArrowIcon = styled(KeyboardArrowDownIcon)<{
+  expandComments: boolean;
+}>`
   position: absolute;
   left: 0;
   cursor: pointer;
+  transform-origin: center;
+  transform: ${({ expandComments }) =>
+    expandComments ? "rotate(180deg)" : "rotate(0deg)"};
+
+  &:hover {
+    transition: all 0.5s;
+  }
 `;
 
 const InputWrapper = styled.form`
@@ -270,18 +278,32 @@ function MainPost(props: MainPostProps) {
       comment: data.comment,
       editComment: commentForEdit?.commentId,
     };
-    axios
-      .post(`${POSTS_API}/${requestData.postId}/comments`, requestData)
-      .then((response) => {
-        //수정중인 데이터 초기화
-        setCommentForEdit(null);
+
+    try {
+      const response = await axios.post(
+        `${POSTS_API}/${requestData.postId}/comments`,
+        requestData
+      );
+
+      if (commentForEdit) {
+        // If editing an existing comment, update the comments array
+        const updatedComments = comments.map((comment) =>
+          comment.commentId === commentForEdit.commentId
+            ? { ...comment, text: data.comment } // Update the text of the edited comment
+            : comment
+        );
+        setComments(updatedComments);
+        setCommentForEdit(null); // Clear the edited comment
+      } else {
+        // If creating a new comment, add it to the comments array
         setComments([response.data.data[0], ...comments]);
-        reset();
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error("Error liking post:", error);
-      });
+      }
+
+      reset();
+    } catch (error) {
+      // Handle any errors
+      console.error("Error posting/editing comment:", error);
+    }
   };
 
   useEffect(() => {
@@ -330,28 +352,27 @@ function MainPost(props: MainPostProps) {
           </PostContent>
           <Reaction>
             <ReactionButton onClick={handleLikeClick}>
-              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-              <LikeBtn>
-                <span>좋아요</span>
-                <span>{upVoteCount}</span>
-              </LikeBtn>
+              <LikeBtnWrapper>
+                {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                <LikeBtn>{upVoteCount}</LikeBtn>
+              </LikeBtnWrapper>
             </ReactionButton>
             <div>
               <AutorenewIcon />
-              <span>리포스트</span>
             </div>
             <ReactionButton onClick={handleMarkClick}>
               {marked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-              <span>북마크</span>
             </ReactionButton>
             <div>
               <ShareIcon />
-              <span>공유하기</span>
             </div>
           </Reaction>
         </PostDetail>
         <PostComment>
-          <StyledArrowIcon onClick={handleExpandIcon} />
+          <StyledArrowIcon
+            expandComments={expandComments}
+            onClick={handleExpandIcon}
+          />
           {expandComments ? (
             comments.map((comment: IComments) => (
               <Comment
