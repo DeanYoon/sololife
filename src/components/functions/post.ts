@@ -44,7 +44,7 @@ export function formatTimeAgo(date: Date): string {
   if (diff < 1000 * 60) {
     return `${Math.floor(diff / 1000)}s`;
   } else if (diff < 1000 * 60 * 60) {
-    return `${Math.floor(diff / (1000 * 60))}min`;
+    return `${Math.floor(diff / (1000 * 60))}m`;
   } else if (diff < 1000 * 60 * 60 * 24) {
     return `${Math.floor(diff / (1000 * 60 * 60))}h`;
   } else if (diff < 1000 * 60 * 60 * 24 * 30) {

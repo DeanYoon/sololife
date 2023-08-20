@@ -235,8 +235,12 @@ function MainPost(props: MainPostProps) {
         `${POSTS_API}/${props.id}/comments/${commentId}`
       );
 
-      if (response.data.data) {
-        setComments(response.data.data); // 댓글 삭제 후 다음 최신 댓글로 업데이트
+      if (response) {
+        // 댓글 삭제 후 삭제 댓글 제외 후 렌더링
+        const updatedComments = comments.filter(
+          (comment) => comment.commentId !== commentId
+        );
+        setComments(updatedComments);
       } else {
         console.log("Error deleting comment");
       }
@@ -285,9 +289,6 @@ function MainPost(props: MainPostProps) {
       .get(`${POSTS_API}/${props.id}/comments/last`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
-        const time = response.data.data[0]?.createdTime;
-        console.log(time);
-        console.log(newFormattedDate);
       })
       .catch((error) => {
         console.error("Error", error);
