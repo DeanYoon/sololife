@@ -25,3 +25,5 @@ yarn-error.log*
 
 /public/img
 .env
+
+/src/components/api

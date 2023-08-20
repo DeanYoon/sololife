@@ -285,7 +285,9 @@ function MainPost(props: MainPostProps) {
       .get(`${POSTS_API}/${props.id}/comments/last`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
-        console.log(response.data);
+        const time = response.data.data[0]?.createdTime;
+        console.log(time);
+        console.log(newFormattedDate);
       })
       .catch((error) => {
         console.error("Error", error);

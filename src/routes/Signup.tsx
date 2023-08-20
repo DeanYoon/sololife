@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { hashPassword } from "../components/hash";
 import bcrypt from "bcryptjs";
-import { DOMAIN_URL, USERS_API, postInsertUserData } from "../components/api";
+import { DOMAIN_URL, USERS_API } from "../components/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -196,13 +196,6 @@ function Signup() {
       } catch (error) {
         console.error("Error:", error);
       }
-
-      // console.log(userData);user
-      // const insertResult = await postInsertUserData(userData);
-      // console.log(insertResult?.data.message);
-      // if (insertResult?.data.message !== "NG") {
-      //   navigate("/signup-done");
-      // }
     } else {
       alert("다시 입력하십시오");
     }
