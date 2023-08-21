@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import axios from "axios";
-import { COMMENTS_API, POSTS_API } from "../api";
+import { POSTS_API } from "../api";
 import { useForm } from "react-hook-form";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -11,6 +11,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { UserData as UserAtom, UserData } from "../../atoms";
 import { formatTimeAgo } from "../functions/post";
@@ -88,22 +89,35 @@ const ReactionButton = styled.div`
   cursor: pointer;
   color: #767676;
 `;
-
-const LikeBtn = styled.span`
+const LikeBtnWrapper = styled.div`
   display: flex;
-  text-align: center;
-  justify-content: space-between;
-  width: 70px;
-  span {
-  }
-  span:last-child {
-    width: 20px;
-  }
+  align-items: center;
+  justify-content: center;
 `;
 
+const LikeBtn = styled.span`
+  margin-left: 10px;
+  width: 20px;
+`;
 const PostComment = styled.div`
   width: 100%;
+  position: relative;
   padding: 10px 25px 25px 25px;
+`;
+
+const StyledArrowIcon = styled(KeyboardArrowDownIcon)<{
+  expandComments: boolean;
+}>`
+  position: absolute;
+  left: 0;
+  cursor: pointer;
+  transform-origin: center;
+  transform: ${({ expandComments }) =>
+    expandComments ? "rotate(180deg)" : "rotate(0deg)"};
+
+  &:hover {
+    transition: all 0.5s;
+  }
 `;
 
 const InputWrapper = styled.form`
@@ -150,6 +164,7 @@ export interface IComments {
 }
 
 function MainPost(props: MainPostProps) {
+  const newFormattedDate = formatTimeAgo(new Date(props.date));
   const [liked, setLiked] = useState(false);
   const [marked, setMarked] = useState(false);
   const [upVoteCount, setUpVoteCount] = useState(0);
@@ -157,6 +172,7 @@ function MainPost(props: MainPostProps) {
   const User = useRecoilValue(UserData);
   const [commentForEdit, setCommentForEdit] = useState<IComments | null>(null);
   const [expandComments, setExpandComments] = useState(false);
+  const [commentsNum, setCommentsNum] = useState(0);
   const {
     register,
     handleSubmit,
@@ -224,10 +240,15 @@ function MainPost(props: MainPostProps) {
   const handleDeleteBtn = async (commentId: number) => {
     try {
       const response = await axios.delete(
-        `${COMMENTS_API}/${props.id}/${commentId}`
+        `${POSTS_API}/${props.id}/comments/${commentId}`
       );
-      if (response.data.message === "Comment deleted successfully!") {
-        setComments(response.data.data); // 댓글 삭제 후 다음 최신 댓글로 업데이트
+
+      if (response) {
+        // 댓글 삭제 후 삭제 댓글 제외 후 렌더링
+        const updatedComments = comments.filter(
+          (comment) => comment.commentId !== commentId
+        );
+        setComments(updatedComments);
       } else {
         console.log("Error deleting comment");
       }
@@ -235,8 +256,20 @@ function MainPost(props: MainPostProps) {
       console.error("An error occurred:", error);
     }
   };
-
-  const newFormattedDate = formatTimeAgo(new Date(props.date));
+  const handleExpandIcon = () => {
+    setExpandComments((prev) => !prev);
+    if (comments.length === 1) {
+      axios
+        .get(`${POSTS_API}/${props.id}/comments`)
+        .then((response) => {
+          response.data.data && setComments(response.data.data);
+          console.log("data recieved");
+        })
+        .catch((error) => {
+          console.error("Error", error);
+        });
+    }
+  };
 
   const onValid = async (data: any) => {
     const requestData = {
@@ -245,23 +278,37 @@ function MainPost(props: MainPostProps) {
       comment: data.comment,
       editComment: commentForEdit?.commentId,
     };
-    axios
-      .post(`${COMMENTS_API}/${requestData.postId}`, requestData)
-      .then((response) => {
-        //수정중인 데이터 초기화
-        setCommentForEdit(null);
-        setComments(response.data.data);
-        reset();
-      })
-      .catch((error) => {
-        // Handle any errors
-        console.error("Error liking post:", error);
-      });
+
+    try {
+      const response = await axios.post(
+        `${POSTS_API}/${requestData.postId}/comments`,
+        requestData
+      );
+
+      if (commentForEdit) {
+        // If editing an existing comment, update the comments array
+        const updatedComments = comments.map((comment) =>
+          comment.commentId === commentForEdit.commentId
+            ? { ...comment, text: data.comment } // Update the text of the edited comment
+            : comment
+        );
+        setComments(updatedComments);
+        setCommentForEdit(null); // Clear the edited comment
+      } else {
+        // If creating a new comment, add it to the comments array
+        setComments([response.data.data[0], ...comments]);
+      }
+
+      reset();
+    } catch (error) {
+      // Handle any errors
+      console.error("Error posting/editing comment:", error);
+    }
   };
 
   useEffect(() => {
     axios
-      .get(`${COMMENTS_API}/${props.id}`)
+      .get(`${POSTS_API}/${props.id}/comments/last`)
       .then((response) => {
         response.data.data && setComments(response.data.data);
       })
@@ -276,12 +323,8 @@ function MainPost(props: MainPostProps) {
     if (bookMarkArray.includes(GlobalUserData.id.toString())) {
       setMarked(true);
     }
-    setUpVoteCount(emailArray.length - 1);
+    setUpVoteCount(emailArray.length - 1); //
   }, []);
-
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
 
   return (
     <>
@@ -309,46 +352,46 @@ function MainPost(props: MainPostProps) {
           </PostContent>
           <Reaction>
             <ReactionButton onClick={handleLikeClick}>
-              {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-              <LikeBtn>
-                <span>좋아요</span>
-                <span>{upVoteCount}</span>
-              </LikeBtn>
+              <LikeBtnWrapper>
+                {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                <LikeBtn>{upVoteCount}</LikeBtn>
+              </LikeBtnWrapper>
             </ReactionButton>
             <div>
               <AutorenewIcon />
-              <span>리포스트</span>
             </div>
             <ReactionButton onClick={handleMarkClick}>
               {marked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-              <span>북마크</span>
             </ReactionButton>
             <div>
               <ShareIcon />
-              <span>공유하기</span>
             </div>
           </Reaction>
         </PostDetail>
         <PostComment>
-          {expandComments
-            ? comments.map((comment: IComments) => (
-                <Comment
-                  key={comment.commentId}
-                  comment={comment}
-                  handleEditBtn={handleEditBtn}
-                  handleDeleteBtn={handleDeleteBtn}
-                  User={User}
-                />
-              ))
-            : comments[0] && (
-                <Comment
-                  key={comments[0].commentId}
-                  comment={comments[0]}
-                  handleEditBtn={handleEditBtn}
-                  handleDeleteBtn={handleDeleteBtn}
-                  User={User}
-                />
-              )}
+          <StyledArrowIcon
+            expandComments={expandComments}
+            onClick={handleExpandIcon}
+          />
+          {expandComments ? (
+            comments.map((comment: IComments) => (
+              <Comment
+                key={comment.commentId}
+                comment={comment}
+                handleEditBtn={handleEditBtn}
+                handleDeleteBtn={handleDeleteBtn}
+                User={User}
+              />
+            ))
+          ) : (
+            <Comment
+              key={comments[0]?.commentId}
+              comment={comments[0]}
+              handleEditBtn={handleEditBtn}
+              handleDeleteBtn={handleDeleteBtn}
+              User={User}
+            />
+          )}
 
           <InputWrapper onSubmit={handleSubmit(onValid)}>
             <input
