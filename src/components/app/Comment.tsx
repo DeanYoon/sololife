@@ -38,24 +38,25 @@ const MoreIconWrapper = styled.div`
 const MoreBtnWrapper = styled.div`
   position: absolute;
   display: flex;
-  flex-direction: column;
-  top: -40px;
-  right: -30px;
+  top: 0px;
+  right: -20px;
   button {
     width: 40px;
+    height: 20px;
+    font-size: 10px;
   }
 `;
 interface CommentProps {
   comment: IComments;
-  handleEditBtn: (comment: IComments) => void;
-  handleDeleteBtn: (commentId: number) => void;
+  handleEditCommentBtn: (comment: IComments) => void;
+  handleDeleteCommentBtn: (commentId: number) => void;
   User: UserData;
 }
 
 function Comment({
   comment,
-  handleEditBtn,
-  handleDeleteBtn,
+  handleEditCommentBtn,
+  handleDeleteCommentBtn,
   User,
 }: CommentProps) {
   const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
@@ -98,8 +99,12 @@ function Comment({
             <MoreHorizIcon />
             {isMoreBtnClicked && User.id === comment.userId && (
               <MoreBtnWrapper>
-                <button onClick={() => handleEditBtn(comment)}>수정</button>
-                <button onClick={() => handleDeleteBtn(comment.commentId)}>
+                <button onClick={() => handleEditCommentBtn(comment)}>
+                  수정
+                </button>
+                <button
+                  onClick={() => handleDeleteCommentBtn(comment.commentId)}
+                >
                   삭제
                 </button>
               </MoreBtnWrapper>

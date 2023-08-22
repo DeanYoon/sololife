@@ -12,6 +12,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import { UserData as UserAtom, UserData } from "../../atoms";
 import { formatTimeAgo } from "../functions/post";
@@ -30,6 +31,7 @@ const PostDetail = styled.div`
 const PostOwner = styled.div`
   display: flex;
   margin-bottom: 20px;
+  position: relative;
   img {
     width: 65px;
     height: 65px;
@@ -37,6 +39,22 @@ const PostOwner = styled.div`
     background-color: #feefea;
     border: none;
     outline: none;
+  }
+`;
+const MoreIcon = styled.div`
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+`;
+const MoreBtnWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  top: 0px;
+  right: -20px;
+  button {
+    width: 40px;
+    height: 20px;
+    font-size: 10px;
   }
 `;
 const OwnerInfo = styled.div`
@@ -152,6 +170,8 @@ export interface MainPostProps {
   content: string;
   upvote: string;
   bookmark: string;
+  userId: number;
+  onDeletePost: () => void;
 }
 export interface IComments {
   commentId: number;
@@ -172,7 +192,10 @@ function MainPost(props: MainPostProps) {
   const User = useRecoilValue(UserData);
   const [commentForEdit, setCommentForEdit] = useState<IComments | null>(null);
   const [expandComments, setExpandComments] = useState(false);
-  const [commentsNum, setCommentsNum] = useState(0);
+  const [isMoreBtnClicked, setIsMoreBtnClicked] = useState(false);
+  const moreIconRef = useRef<HTMLDivElement | null>(null);
+  const GlobalUserData = useRecoilValue(UserAtom);
+
   const {
     register,
     handleSubmit,
@@ -181,23 +204,22 @@ function MainPost(props: MainPostProps) {
   } = useForm({
     mode: "onChange",
   });
-  const GlobalUserData = useRecoilValue(UserAtom);
-  const handleLikeClick = () => {
-    setLiked(!liked);
-
+  const handleLikeClick = async () => {
     // Define the request data (start and listn in your case)
     const requestData = {
       postId: props.id,
       userId: GlobalUserData.id,
     };
 
-    axios
+    await axios
       .post(`${POSTS_API}/${props.id}/like`, requestData)
       .then((response) => {
         // Handle the API response
         const responseData = response.data;
         if (responseData.message === "OK") {
           // Check if the post was already liked
+          setLiked(!liked);
+
           if (liked) {
             // Post was already liked, so decrement upVote by 1
             // Update the upVote state to reflect the change
@@ -217,27 +239,27 @@ function MainPost(props: MainPostProps) {
       });
   };
 
-  const handleMarkClick = () => {
-    setMarked(!marked);
-
+  const handleMarkClick = async () => {
     const requestData = {
       postId: props.id,
       userId: GlobalUserData.id,
     };
 
-    axios
+    await axios
       .post(`${POSTS_API}/${props.id}/bookmark`, requestData)
-      .then((response) => {})
+      .then((response) => {
+        setMarked(!marked);
+      })
       .catch((error) => {
         // Handle any errors
         console.error("Error liking post:", error);
       });
   };
 
-  const handleEditBtn = (comment: IComments) => {
+  const handleEditCommentBtn = (comment: IComments) => {
     setCommentForEdit(comment);
   };
-  const handleDeleteBtn = async (commentId: number) => {
+  const handleDeleteCommentBtn = async (commentId: number) => {
     try {
       const response = await axios.delete(
         `${POSTS_API}/${props.id}/comments/${commentId}`
@@ -256,10 +278,31 @@ function MainPost(props: MainPostProps) {
       console.error("An error occurred:", error);
     }
   };
-  const handleExpandIcon = () => {
+  const handleEditPostBtn = () => {
+    console.log(props.id);
+  };
+  const handleDeletePostBtn = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this post?"
+    );
+    if (confirmDelete) {
+      try {
+        const response = await axios.delete(`${POSTS_API}/${props.id}`);
+        if (response) {
+          // Call the onDeletePost callback to update posts after deletion
+          props.onDeletePost();
+        } else {
+          console.log("Error deleting post");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    }
+  };
+  const handleExpandIcon = async () => {
     setExpandComments((prev) => !prev);
     if (comments.length === 1) {
-      axios
+      await axios
         .get(`${POSTS_API}/${props.id}/comments`)
         .then((response) => {
           response.data.data && setComments(response.data.data);
@@ -269,6 +312,9 @@ function MainPost(props: MainPostProps) {
           console.error("Error", error);
         });
     }
+  };
+  const handlePostMoreBtn = () => {
+    setIsMoreBtnClicked(!isMoreBtnClicked);
   };
 
   const onValid = async (data: any) => {
@@ -296,7 +342,7 @@ function MainPost(props: MainPostProps) {
         setCommentForEdit(null); // Clear the edited comment
       } else {
         // If creating a new comment, add it to the comments array
-        setComments([response.data.data[0], ...comments]);
+        setComments((prevComments) => [response.data.data[0], ...prevComments]);
       }
 
       reset();
@@ -307,24 +353,48 @@ function MainPost(props: MainPostProps) {
   };
 
   useEffect(() => {
-    axios
-      .get(`${POSTS_API}/${props.id}/comments/last`)
-      .then((response) => {
-        response.data.data && setComments(response.data.data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${POSTS_API}/${props.id}/comments/last`
+        );
+        if (response.data.data) {
+          setComments(response.data.data);
+        }
+      } catch (error) {
         console.error("Error", error);
-      });
-    const emailArray = props.upvote.split(",");
-    const bookMarkArray = props.bookmark.split(",");
-    if (emailArray.includes(GlobalUserData.id.toString())) {
-      setLiked(true);
-    }
-    if (bookMarkArray.includes(GlobalUserData.id.toString())) {
-      setMarked(true);
-    }
-    setUpVoteCount(emailArray.length - 1); //
+      }
+
+      const emailArray = props.upvote.split(",");
+      const bookMarkArray = props.bookmark.split(",");
+      if (emailArray.includes(GlobalUserData.id.toString())) {
+        setLiked(true);
+      }
+      if (bookMarkArray.includes(GlobalUserData.id.toString())) {
+        setMarked(true);
+      }
+      setUpVoteCount(emailArray.length - 1);
+    };
+
+    fetchData(); // Immediately invoke the async function
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (moreIconRef.current && !moreIconRef.current.contains(event.target)) {
+        setIsMoreBtnClicked(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+  useEffect(() => {
+    console.log(comments);
+  }, [comments]);
 
   return (
     <>
@@ -344,6 +414,15 @@ function MainPost(props: MainPostProps) {
               <h1>{props.username}</h1>
               <div>{newFormattedDate}</div>
             </OwnerInfo>
+            <MoreIcon ref={moreIconRef} onClick={handlePostMoreBtn}>
+              <MoreHorizIcon />
+            </MoreIcon>
+            {isMoreBtnClicked && User.id === props.userId && (
+              <MoreBtnWrapper>
+                <button onClick={handleEditPostBtn}>수정</button>
+                <button onClick={handleDeletePostBtn}>삭제</button>
+              </MoreBtnWrapper>
+            )}
           </PostOwner>
           <PostContent>
             <h1>{props.title}</h1>
@@ -378,8 +457,8 @@ function MainPost(props: MainPostProps) {
               <Comment
                 key={comment.commentId}
                 comment={comment}
-                handleEditBtn={handleEditBtn}
-                handleDeleteBtn={handleDeleteBtn}
+                handleEditCommentBtn={handleEditCommentBtn}
+                handleDeleteCommentBtn={handleDeleteCommentBtn}
                 User={User}
               />
             ))
@@ -387,8 +466,8 @@ function MainPost(props: MainPostProps) {
             <Comment
               key={comments[0]?.commentId}
               comment={comments[0]}
-              handleEditBtn={handleEditBtn}
-              handleDeleteBtn={handleDeleteBtn}
+              handleEditCommentBtn={handleEditCommentBtn}
+              handleDeleteCommentBtn={handleDeleteCommentBtn}
               User={User}
             />
           )}
@@ -398,6 +477,7 @@ function MainPost(props: MainPostProps) {
               {...register("comment", { required: true, maxLength: 100 })}
               placeholder="댓글을 달아보세요!"
               defaultValue={commentForEdit?.text}
+              autoComplete="off"
             />
             <button>Reply</button>
           </InputWrapper>

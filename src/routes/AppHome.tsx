@@ -66,29 +66,40 @@ function AppHome() {
   const handleClickTag = (key: number) => {
     setSelectedTag(key);
   };
+  const fetchPosts = async (tag: number) => {
+    try {
+      const params = {
+        listn: 10,
+        tag: tag,
+      };
+
+      const response = await axios.get(
+        `${POSTS_API}?${queryString.stringify(params)}`
+      );
+      console.log(response.data.data);
+      setPosts(response.data.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
+  const handlePostDelete = async () => {
+    await fetchPosts(selectedTag);
+  };
 
   useEffect(() => {
-    const params = {
-      listn: 20,
-      tag: selectedTag,
-    };
-    axios
-      .get(`${POSTS_API}?${queryString.stringify(params)}`)
-      .then((response) => {
-        setPosts(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-      });
+    const fetchData = async () => {
+      try {
+        await fetchPosts(selectedTag);
 
-    axios
-      .get(`${POSTS_API}/tags`)
-      .then((response) => {
-        setTags(response.data);
-      })
-      .catch((error) => {
+        const tagsResponse = await axios.get(`${POSTS_API}/tags`);
+        setTags(tagsResponse.data);
+      } catch (error) {
         console.error(error);
-      });
+      }
+    };
+
+    fetchData(); // Immediately invoke the async function
   }, [selectedTag]);
 
   return (
@@ -133,6 +144,8 @@ function AppHome() {
             upvote={post.upvote}
             image={post.image}
             bookmark={post.bookmark}
+            userId={post.userId}
+            onDeletePost={handlePostDelete}
           />
         ))}
       </PostWrapper>

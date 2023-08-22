@@ -190,22 +190,23 @@ function MyProfile() {
     }
   };
   useEffect(() => {
-    axios
-      .get(`${USERS_API}/${UserInfo.id}/bookmarked-posts`)
-      .then((response) => {
-        setBookmarkedPosts(response.data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const bookmarkedPostsResponse = await axios.get(
+          `${USERS_API}/${UserInfo.id}/bookmarked-posts`
+        );
+        setBookmarkedPosts(bookmarkedPostsResponse.data);
+
+        const myPostsResponse = await axios.get(
+          `${USERS_API}/${UserInfo.id}/posts`
+        );
+        setMyPosts(myPostsResponse.data);
+      } catch (error) {
         console.error(error);
-      });
-    axios
-      .get(`${USERS_API}/${UserInfo.id}/posts`)
-      .then((response) => {
-        setMyPosts(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      }
+    };
+
+    fetchData(); // Immediately invoke the async function
   }, []);
 
   const handleFileUpload = async (
@@ -217,7 +218,7 @@ function MyProfile() {
         userId: UserInfo.id,
         profileImageData: encodedImage,
       };
-      axios
+      await axios
         .post(`${USERS_API}/update/profileImage`, postData)
         .then((response) => {
           console.log(response);

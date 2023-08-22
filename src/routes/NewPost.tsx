@@ -145,7 +145,7 @@ function NewPost() {
   const { register, handleSubmit, watch } = useForm({ mode: "onSubmit" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     try {
       const postData: FormData = {
         ...data,
@@ -153,7 +153,7 @@ function NewPost() {
         image: imageData ? imageData : "",
         userId: UserInfo.id,
       };
-      axios
+      await axios
         .post(`${POSTS_API}/insert`, postData)
         .then((response) => {
           navigate("/home");
@@ -192,12 +192,16 @@ function NewPost() {
   };
 
   useEffect(() => {
-    axios
-      .get(`${POSTS_API}/tags`)
-      .then((response) => {
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get(`${POSTS_API}/tags`);
         setTags(response.data);
-      })
-      .catch();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchTags(); // Immediately invoke the async function
   }, []);
 
   return (
