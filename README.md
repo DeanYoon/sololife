@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# SoloLife: Enhancing Connections for Independent Living
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to SoloLife, a purpose-built social networking platform designed to enhance connections for independent living. This project leverages a stack of powerful technologies to provide a user-friendly social networking experience.
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
+https://github.com/DeanYoon/sololife/assets/68269605/082e1031-b330-431e-9c2a-c36f9d3846b5
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## Technologies Used
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
+- **TypeScript** for strong typing and code reliability.
+- **React.js** for building interactive user interfaces.
 
-### `npm run build`
+### Backend
+- **Node.js** for server-side logic and API development.
+- **Express** as the application framework.
+- **MongoDB** as the database for storing chat data.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Features
 
-### `npm run eject`
+### User Authentication
+- User registration via email or social login with Google and Kakao for convenience and flexibility.
+- Secure login and data security optimization for user peace of mind.
+<img width="913" alt="스크린샷 2023-10-19 오후 2 03 10" src="https://github.com/DeanYoon/sololife/assets/68269605/e20ede9e-0a53-489d-9f76-ce1b17143500">
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Feeds and Interactions
+- Access a dynamic feed showcasing posts from other users.
+- Engage with posts by giving likes, bookmarking, leaving comments, editing comments, and deleting comments.
+- Create posts with customizable categories and the option to include images.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Personalization
+- Bookmark posts to access them later via the "My Page" feature.
+- Easily update your profile image to represent yourself effectively.
+<img width="829" alt="스크린샷 2023-10-19 오후 2 04 02" src="https://github.com/DeanYoon/sololife/assets/68269605/ea5a9217-f5c4-4259-a7e0-ab21f41d4000">
+## Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+To get started with SoloLife, follow these steps:
 
-## Learn More
+1. Visit [SoloLife](https://www.sololife.net/) to explore the platform.
+2. Sign up using your email or choose the convenience of Google and Kakao social logins.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Now you can enjoy the dynamic feeds, connect with others, and create your own posts to share your experiences.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
